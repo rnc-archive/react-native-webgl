@@ -1,10 +1,14 @@
 {
   "name": "react-native-webgl",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "license": "MIT",
   "author": "Gaëtan Renaudeau <renaudeau.gaetan@gmail.com>",
   "description": "React Native implementation of WebGL",
-  "keywords": ["react", "react-native", "webgl"],
+  "keywords": [
+    "react",
+    "react-native",
+    "webgl"
+  ],
   "main": "lib/index.js",
   "files": [
     "android",
