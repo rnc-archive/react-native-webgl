@@ -1,6 +1,6 @@
 {
   "name": "react-native-webgl",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "license": "MIT",
   "author": "Gaëtan Renaudeau <renaudeau.gaetan@gmail.com>",
   "description": "React Native implementation of WebGL",
