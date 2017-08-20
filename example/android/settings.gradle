@@ -1,0 +1,6 @@
+rootProject.name = 'example'
+
+include ':app'
+
+include ':RNWebGL'
+project(':RNWebGL').projectDir = file('../../android')
