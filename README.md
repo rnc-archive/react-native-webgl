@@ -1,7 +1,3 @@
-**LIBRARY STATUS: UNSTABLE. expect frequent breaking changes.**
-
----
-
 <img width="32" alt="icon" src="https://cloud.githubusercontent.com/assets/211411/9813786/eacfcc24-5888-11e5-8f9b-5a907a2cbb21.png"> react-native-webgl
 ========
 
@@ -33,7 +29,8 @@ class RedSquareWebGL extends Component {
 }
 ```
 
-see also [example](example).
+> For a better example, see [Image drawn through a Shader](example/App.js) (vanilla WebGL).
+Then, feel free to use your preferred library, like https://github.com/regl-project/regl , https://github.com/mrdoob/three.js or https://github.com/gre/gl-react (`gl-react-native` is backed by this implementation).
 
 ## Difference with web's WebGL
 
@@ -41,12 +38,26 @@ see also [example](example).
 The first noticeable difference is the addition of an extension, called `"RN"` that you can get with `gl.getExtension("RN")`. It returns an object with a few functions:
 
 - `endFrame()`: the mandatory call to get anything drawn on screen. It's the way to tell the current implementation everything is finished for the current frame. (we might later introduce better way)
-- `loadTexture(config)`: It is a way to load a `Texture` with a configuration object. There are many format supported (See Texture Config Formats). For instance you can load an image with `{ image: "url_of_the_image" }`. This function returns a **Promise of `{ texture, width, height }`** where texture is the actual `WebGLTexture` instance you can use in a `gl.bindTexture` and width and height is the texture dimension.
+- `loadTexture(config)`: It is a way to load a `Texture` with a configuration object. For the config object format see Section **Texture Config Formats**.This function returns a **Promise of `{ texture, width, height }`** where texture is the actual `WebGLTexture` instance you can use in a `gl.bindTexture` and width and height is the texture dimension.
 - `unloadTexture(texture)`: allows to unload a texture with the texture object that was returned in a previous `loadTexture`.
 
 #### Texture Config Formats
 
-TO BE WRITTEN
+The texture formats are provided in an extensible and loosely-coupled way via adding more "Loaders" to the project. *(as soon as they are linked, they will get discovered by RNWebGL via the RN bridge)*.
+
+This library comes with one built-in loader: the Image Loader. Other loaders that will come via libraries like `react-native-webgl-camera` and `react-native-webgl-video`. Feel free to implement your own.
+
+##### Image Loader
+
+Format is `{ image }` where image have the same format as React Native [`<Image source` prop](https://facebook.github.io/react-native/docs/image.html#source).
+
+The library comes with only one built-in format: the Image Loader.
+
+##### Shared config options
+
+There are also config options shared (by convention) across the loaders:
+
+- `yflip` (boolean): allows to vertically flip the texture when you load it. You likely always want to set this to true. (default is false because it's an extra cost)
 
 ### Missing WebGL features
 
@@ -81,44 +92,20 @@ npm i --save react-native-webgl
 yarn add react-native-webgl
 ```
 
-gl-react-webgl is implemented with some C++ bricks, therefore `react-native link react-native-webgl` is not enough to install and configure your project, please read following notes.
 
 ### Configure your React Native Application
 
-*(TODO: REWRITE THIS. I think maybe we can recommend doing the usual react-native link command and we just need to document what needs to be done on top of it.)*
-
-**on iOS:**
-
-(TO BE WRITTEN – basically just the usual XCode linking)
+```bash
+react-native link react-native-webgl
+```
 
 **on Android:**
 
-1. `android/local.properties`: Make sure you have Android NDK (needed to compile the Native C++ code) and that it's properly configured in ANDROID_NDK env or in `local.properties` file (e.g. `ndk.dir=/usr/local/opt/android-ndk-r10e`).
-2. `android/settings.gradle`:: Add the following snippet
-```gradle
-include ':RNWebGL'
-project(':RNWebGL').projectDir = file('../node_modules/react-native-webgl/android')
-```
-3. `android/app/build.gradle`: If it's not already there, add `gradle-download-task` **buildscript** dependency: `classpath 'de.undercouch:gradle-download-task:3.1.2'` . If you don't do this, you will likely have `:downloadJSCHeaders` not working.
-4. `android/app/build.gradle`: Add in dependencies block.
-```gradle
-compile project(':RNWebGL')
-```
-5. in your `MainApplication` (or equivalent) the RNGLPackage needs to be added. Add the import at the top:
-```java
-import fr.greweb.rngl.RNGLPackage;
-```
-6. In order for React Native to use the package, add it the packages inside of the class extending ReactActivity.
-```java
-@Override
-protected List<ReactPackage> getPackages() {
-  return Arrays.<ReactPackage>asList(
-	new MainReactPackage(),
-	...
-	new RNGLPackage()
-  );
-}
-```
+gl-react-webgl is implemented with some C++ bricks and `react-native link react-native-webgl` is not enough to install and configure your project for Android:
+
+- `android/local.properties`: Make sure you have Android NDK (needed to compile the Native C++ code) and that it's properly configured in ANDROID_NDK env or in `local.properties` file (e.g. `ndk.dir=/usr/local/opt/android-ndk-r10e`).
+- `android/app/build.gradle`: If it's not already there, add `gradle-download-task` **buildscript** dependency: `classpath 'de.undercouch:gradle-download-task:3.1.2'` . If you don't do this, you will likely have `:downloadJSCHeaders` not working.
+
 
 ### Thanks
 
