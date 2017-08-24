@@ -10,7 +10,7 @@ type RNWebGLRenderingContext = WebGLRenderingContext & {
 
 type Config = Object;
 
-type Extension = {
+export type Extension = {
   // NB more methods can be extended with middlewares
   loadTexture: (
     config: Config
