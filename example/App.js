@@ -4,7 +4,7 @@ import { StyleSheet, Text, View } from "react-native";
 import { WebGLView } from "react-native-webgl";
 
 export default class App extends React.Component {
-  onContextCreate1 = (gl: WebGLRenderingContext) => {
+  onContextCreate = (gl: WebGLRenderingContext) => {
     const rngl = gl.getExtension("RN");
     gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
     const buffer = gl.createBuffer();
@@ -46,9 +46,7 @@ void main() {
     var p = gl.getAttribLocation(program, "p");
     gl.enableVertexAttribArray(p);
     gl.vertexAttribPointer(p, 2, gl.FLOAT, false, 0, 0);
-
     const tLocation = gl.getUniformLocation(program, "t");
-
     rngl
       .loadTexture({ image: "https://i.imgur.com/wxqlQkh.jpg", yflip: true })
       .then(({ texture }) => {
@@ -65,7 +63,7 @@ void main() {
       <View style={styles.container}>
         <WebGLView
           style={styles.webglView}
-          onContextCreate={this.onContextCreate1}
+          onContextCreate={this.onContextCreate}
         />
       </View>
     );

@@ -5,13 +5,19 @@ import {
   View,
   ViewPropTypes,
   Platform,
-  NativeModules,
   requireNativeComponent
 } from "react-native";
-import resolveAssetSource from "react-native/Libraries/Image/resolveAssetSource";
-import type { RNWebGLExtension } from "./types";
-
-const { RNWebGLTextureManager } = NativeModules;
+import RNExtension from "./RNExtension";
+import {
+  RNWebGLBuffer,
+  RNWebGLFramebuffer,
+  RNWebGLObject,
+  RNWebGLProgram,
+  RNWebGLRenderbuffer,
+  RNWebGLRenderingContext,
+  RNWebGLShader,
+  RNWebGLTexture
+} from "./webglTypes";
 
 export default class WebGLView extends React.Component {
   props: {
@@ -44,29 +50,35 @@ export default class WebGLView extends React.Component {
       <View {...viewProps}>
         <WebGLView.NativeView
           style={{ flex: 1, backgroundColor: "transparent" }}
-          onSurfaceCreate={this._onSurfaceCreate}
+          onSurfaceCreate={this.onSurfaceCreate}
           msaaSamples={Platform.OS === "ios" ? msaaSamples : undefined}
         />
       </View>
     );
   }
 
-  _onSurfaceCreate = ({
+  onSurfaceCreate = ({
     nativeEvent: { ctxId }
   }: {
     nativeEvent: { ctxId: number }
   }) => {
-    const gl = getGl(ctxId);
-    if (gl) {
-      if (this.props.onContextCreate) {
-        this.props.onContextCreate(gl);
+    let gl, error;
+    try {
+      gl = getGl(ctxId);
+      if (!gl) {
+        error = new Error("RNWebGL context creation failed");
       }
-    } else {
+    } catch (e) {
+      error = e;
+    }
+    if (error) {
       if (this.props.onContextFailure) {
-        this.props.onContextFailure(
-          new Error("RNWebGL context creation failed")
-        );
+        this.props.onContextFailure(error);
+      } else {
+        throw error;
       }
+    } else if (gl && this.props.onContextCreate) {
+      this.props.onContextCreate(gl);
     }
   };
 
@@ -75,82 +87,10 @@ export default class WebGLView extends React.Component {
   });
 }
 
-// JavaScript WebGL types to wrap around native objects
-
-const RNWebGLRenderingContext = class WebGLRenderingContext {};
-
-const idToObject = {};
-
-const RNWebGLObject = class WebGLObject {
-  id: *;
-  constructor(id) {
-    if (idToObject[id]) {
-      throw new Error(
-        `WebGL object with underlying RNWebGLTextureId '${id}' already exists!`
-      );
-    }
-    this.id = id; // Native GL object id
-  }
-  toString() {
-    return `[WebGLObject ${this.id}]`;
-  }
-};
-
-const wrapObject = (type: Class<RNWebGLObject>, id: *): WebGLObject => {
-  const found = idToObject[id];
-  if (found) {
-    return found;
-  }
-  return (idToObject[id] = new type(id));
-};
-
-const RNWebGLBuffer = class WebGLBuffer extends RNWebGLObject {};
-
-const RNWebGLFramebuffer = class WebGLFramebuffer extends RNWebGLObject {};
-
-const RNWebGLProgram = class WebGLProgram extends RNWebGLObject {};
-
-const RNWebGLRenderbuffer = class WebGLRenderbuffer extends RNWebGLObject {};
-
-const RNWebGLShader = class WebGLShader extends RNWebGLObject {};
-
-const RNWebGLTexture = class WebGLTexture extends RNWebGLObject {};
-
-const RNWebGLUniformLocation = class WebGLUniformLocation {
-  id: *;
-  constructor(id) {
-    this.id = id; // Native GL object id
-  }
-};
-
-const RNWebGLActiveInfo = class WebGLActiveInfo {
-  constructor(obj) {
-    Object.assign(this, obj);
-  }
-};
-
-const RNWebGLShaderPrecisionFormat = class WebGLShaderPrecisionFormat {
-  constructor(obj) {
-    Object.assign(this, obj);
-  }
-};
-
-global.WebGLRenderingContext = RNWebGLRenderingContext;
-global.WebGLObject = RNWebGLObject;
-global.WebGLBuffer = RNWebGLBuffer;
-global.WebGLFramebuffer = RNWebGLFramebuffer;
-global.WebGLProgram = RNWebGLProgram;
-global.WebGLRenderbuffer = RNWebGLRenderbuffer;
-global.WebGLShader = RNWebGLShader;
-global.WebGLTexture = RNWebGLTexture;
-global.WebGLUniformLocation = RNWebGLUniformLocation;
-global.WebGLActiveInfo = RNWebGLActiveInfo;
-global.WebGLShaderPrecisionFormat = RNWebGLShaderPrecisionFormat;
-
 // Many functions need wrapping/unwrapping of arguments and return value. We
 // handle each case specifically so we can write the tightest code for
 // better performance.
-const wrapMethods = (gl, extension: RNWebGLExtension) => {
+const wrapMethods = (gl, extension) => {
   const wrap = (methodNames, wrapper) =>
     (Array.isArray(methodNames) ? methodNames : [methodNames]).forEach(
       methodName => (gl[methodName] = wrapper(gl[methodName]))
@@ -173,14 +113,16 @@ const wrapMethods = (gl, extension: RNWebGLExtension) => {
       ret = `WebGL 1.0 (react-native-webgl,${Platform.OS}) (${ret})`;
     }
     const type = getParameterTypes[pname];
-    return type ? wrapObject(type, ret) : ret;
+    return type ? RNWebGLObject.wrap(type, ret) : ret;
   });
 
   // Buffers
   wrap("bindBuffer", orig => (target, buffer) =>
     orig.call(gl, target, buffer && buffer.id)
   );
-  wrap("createBuffer", orig => () => wrapObject(RNWebGLBuffer, orig.call(gl)));
+  wrap("createBuffer", orig => () =>
+    RNWebGLObject.wrap(RNWebGLBuffer, orig.call(gl))
+  );
   wrap("deleteBuffer", orig => buffer => orig.call(gl, buffer && buffer.id));
   wrap("isBuffer", orig => buffer =>
     buffer instanceof WebGLBuffer && orig.call(gl, buffer.id)
@@ -191,7 +133,7 @@ const wrapMethods = (gl, extension: RNWebGLExtension) => {
     orig.call(gl, target, framebuffer && framebuffer.id)
   );
   wrap("createFramebuffer", orig => () =>
-    wrapObject(RNWebGLFramebuffer, orig.call(gl))
+    RNWebGLObject.wrap(RNWebGLFramebuffer, orig.call(gl))
   );
   wrap("deleteFramebuffer", orig => framebuffer =>
     orig.call(gl, framebuffer && framebuffer.id)
@@ -213,7 +155,7 @@ const wrapMethods = (gl, extension: RNWebGLExtension) => {
     orig.call(gl, target, renderbuffer && renderbuffer.id)
   );
   wrap("createRenderbuffer", orig => () =>
-    wrapObject(RNWebGLRenderbuffer, orig.call(gl))
+    RNWebGLObject.wrap(RNWebGLRenderbuffer, orig.call(gl))
   );
   wrap("deleteRenderbuffer", orig => renderbuffer =>
     orig.call(gl, renderbuffer && renderbuffer.id)
@@ -227,7 +169,7 @@ const wrapMethods = (gl, extension: RNWebGLExtension) => {
     orig.call(gl, target, texture && texture.id)
   );
   wrap("createTexture", orig => () =>
-    wrapObject(RNWebGLTexture, orig.call(gl))
+    RNWebGLObject.wrap(RNWebGLTexture, orig.call(gl))
   );
   wrap("deleteTexture", orig => texture =>
     orig.call(gl, texture && texture.id)
@@ -245,10 +187,10 @@ const wrapMethods = (gl, extension: RNWebGLExtension) => {
   );
   wrap("compileShader", orig => shader => orig.call(gl, shader && shader.id));
   wrap("createProgram", orig => () =>
-    wrapObject(RNWebGLProgram, orig.call(gl))
+    RNWebGLObject.wrap(RNWebGLProgram, orig.call(gl))
   );
   wrap("createShader", orig => type =>
-    wrapObject(RNWebGLShader, orig.call(gl, type))
+    RNWebGLObject.wrap(RNWebGLShader, orig.call(gl, type))
   );
   wrap("deleteProgram", orig => program =>
     orig.call(gl, program && program.id)
@@ -260,7 +202,7 @@ const wrapMethods = (gl, extension: RNWebGLExtension) => {
   wrap("getAttachedShaders", orig => program =>
     orig
       .call(gl, program && program.id)
-      .map(id => wrapObject(RNWebGLShader, id))
+      .map(id => RNWebGLObject.wrap(RNWebGLShader, id))
   );
   wrap("getProgramParameter", orig => (program, pname) =>
     orig.call(gl, program && program.id, pname)
@@ -370,33 +312,7 @@ const getGl = (ctxId: number): ?RNWebGLRenderingContext => {
   } else {
     gl.__proto__ = global.WebGLRenderingContext.prototype;
   }
-
-  const endFrame = gl.__endFrame;
-  delete gl.__endFrame;
-
-  // extension object retrievable with gl.getExtension("RNWebGL")
-  const extension: RNWebGLExtension = {
-    loadTexture: config => {
-      const arg = {
-        ...config,
-        ctxId
-      };
-      if (typeof arg.image === "number") {
-        // Resolve RN local asset require()
-        arg.image = resolveAssetSource(arg.image);
-      }
-      return RNWebGLTextureManager.create(
-        arg
-      ).then(({ objId, width, height }) => {
-        const texture = new RNWebGLTexture(objId);
-        return { texture, width, height };
-      });
-    },
-    unloadTexture: texture => RNWebGLTextureManager.destroy(texture.id),
-    endFrame: endFrame.bind(gl)
-  };
-
-  wrapMethods(gl, extension);
+  wrapMethods(gl, RNExtension.createWithContext(gl, ctxId));
 
   gl.canvas = null;
 

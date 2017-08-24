@@ -1,3 +1,6 @@
 //@flow
+import "./webglTypes";
 import WebGLView from "./WebGLView";
-export { WebGLView };
+import RNExtension from "./RNExtension";
+import "./ImageLoaderExtension";
+export { WebGLView, RNExtension };
