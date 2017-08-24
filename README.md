@@ -67,13 +67,11 @@ The first noticeable difference is the addition of an extension, called `"RN"` t
 
 The texture formats are provided in an extensible and loosely-coupled way via adding more "Loaders" to the project. *(as soon as they are linked, they will get discovered by RNWebGL via the RN bridge)*.
 
-This library comes with one built-in loader: the Image Loader. Other loaders that will come via libraries like `react-native-webgl-camera` and `react-native-webgl-video`. Feel free to implement your own.
+This library comes with one built-in loader: the Image Loader. More loaders can come via libraries like `react-native-webgl-camera` and `react-native-webgl-video`. Feel free to implement your own.
 
 ##### Image Loader
 
 Format is `{ image }` where image have the same format as React Native [`<Image source` prop](https://facebook.github.io/react-native/docs/image.html#source).
-
-The library comes with only one built-in format: the Image Loader.
 
 ##### Shared config options
 
