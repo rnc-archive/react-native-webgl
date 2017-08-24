@@ -3,6 +3,28 @@
 
 `react-native-webgl` implements WebGL 1 in [React Native](https://facebook.github.io/react-native/).
 
+## Install
+
+```bash
+npm i --save react-native-webgl
+# OR
+yarn add react-native-webgl
+```
+
+
+### Configure your React Native Application
+
+```bash
+react-native link react-native-webgl
+```
+
+**on Android:**
+
+gl-react-webgl is implemented with some C++ bricks and `react-native link react-native-webgl` is not enough to install and configure your project for Android:
+
+- `android/local.properties`: Make sure you have Android NDK (needed to compile the Native C++ code) and that it's properly configured in ANDROID_NDK env or in `local.properties` file (e.g. `ndk.dir=/usr/local/opt/android-ndk-r10e`).
+- `android/app/build.gradle`: If it's not already there, add `gradle-download-task` **buildscript** dependency: `classpath 'de.undercouch:gradle-download-task:3.1.2'` . If you don't do this, you will likely have `:downloadJSCHeaders` not working.
+
 ## Usage
 
 Ths library exposes a `WebGLView` that implements WebGL in React Native.
@@ -59,7 +81,7 @@ There are also config options shared (by convention) across the loaders:
 
 - `yflip` (boolean): allows to vertically flip the texture when you load it. You likely always want to set this to true. (default is false because it's an extra cost)
 
-### Missing WebGL features
+### Remaining WebGL features to implement
 
 The current early implementation miss a bunch of WebGL features, meaning that some gl methods won't work.
 
@@ -83,29 +105,6 @@ Here is the methods that are not supported yet:
 Here is the methods that are partially supported:
 
 - `texImage2D` : works with a few formats only (refer to current implementation). You might want to use `rngl.loadTexture` to load images/camera/videos/whatever textures.
-
-## Install
-
-```bash
-npm i --save react-native-webgl
-# OR
-yarn add react-native-webgl
-```
-
-
-### Configure your React Native Application
-
-```bash
-react-native link react-native-webgl
-```
-
-**on Android:**
-
-gl-react-webgl is implemented with some C++ bricks and `react-native link react-native-webgl` is not enough to install and configure your project for Android:
-
-- `android/local.properties`: Make sure you have Android NDK (needed to compile the Native C++ code) and that it's properly configured in ANDROID_NDK env or in `local.properties` file (e.g. `ndk.dir=/usr/local/opt/android-ndk-r10e`).
-- `android/app/build.gradle`: If it's not already there, add `gradle-download-task` **buildscript** dependency: `classpath 'de.undercouch:gradle-download-task:3.1.2'` . If you don't do this, you will likely have `:downloadJSCHeaders` not working.
-
 
 ### Thanks
 
