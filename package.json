@@ -4,11 +4,7 @@
   "license": "MIT",
   "author": "Gaëtan Renaudeau <renaudeau.gaetan@gmail.com>",
   "description": "React Native implementation of WebGL",
-  "keywords": [
-    "react",
-    "react-native",
-    "webgl"
-  ],
+  "keywords": ["react", "react-native", "webgl"],
   "main": "lib/index.js",
   "files": [
     "android",
@@ -29,8 +25,6 @@
     "watch": "babel --watch --source-maps -d lib src"
   },
   "dependencies": {
-    "events": "^1.1.1",
-    "lru": "^3.1.0",
     "prop-types": "^15.5.8"
   },
   "devDependencies": {

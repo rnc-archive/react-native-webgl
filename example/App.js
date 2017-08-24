@@ -1,13 +1,12 @@
 //@flow
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
-import { WebGLView, Image } from "react-native-webgl";
-import type { RNWebGLRenderingContext } from "react-native-webgl";
+import { WebGLView } from "react-native-webgl";
 
 export default class App extends React.Component {
-  onContextCreate1 = (gl: RNWebGLRenderingContext) => {
+  onContextCreate1 = (gl: WebGLRenderingContext) => {
+    const rngl = gl.getExtension("RN");
     gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
-    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
     const buffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
     gl.bufferData(
@@ -47,25 +46,19 @@ void main() {
     var p = gl.getAttribLocation(program, "p");
     gl.enableVertexAttribArray(p);
     gl.vertexAttribPointer(p, 2, gl.FLOAT, false, 0, 0);
-    var tex = gl.createTexture();
-    gl.bindTexture(gl.TEXTURE_2D, tex);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+
     const tLocation = gl.getUniformLocation(program, "t");
 
-    const img = new Image();
-    img.onload = () => {
-      gl.activeTexture(gl.TEXTURE0);
-      gl.bindTexture(gl.TEXTURE_2D, tex);
-      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
-      gl.uniform1i(tLocation, 0);
-      gl.drawArrays(gl.TRIANGLES, 0, 3);
-      gl.flush();
-      gl.endFrameEXP();
-    };
-    img.src = { uri: "https://i.imgur.com/wxqlQkh.jpg" };
+    rngl
+      .loadTexture({ image: "https://i.imgur.com/wxqlQkh.jpg", yflip: true })
+      .then(({ texture }) => {
+        gl.activeTexture(gl.TEXTURE0);
+        gl.bindTexture(gl.TEXTURE_2D, texture);
+        gl.uniform1i(tLocation, 0);
+        gl.drawArrays(gl.TRIANGLES, 0, 3);
+        gl.flush();
+        rngl.endFrame();
+      });
   };
   render() {
     return (

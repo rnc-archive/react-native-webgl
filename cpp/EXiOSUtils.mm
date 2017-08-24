@@ -2,7 +2,6 @@
 #include <stdarg.h>
 #import <Foundation/Foundation.h>
 
-
 void EXiOSLog(const char *msg, ...) {
   va_list args;
   va_start(args, msg);

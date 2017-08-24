@@ -7,21 +7,85 @@
 
 `react-native-webgl` implements WebGL 1 in [React Native](https://facebook.github.io/react-native/).
 
-> This implementation is a standalone fork of Expo GLView (MIT License) available on
-https://github.com/expo/expo and https://github.com/expo/expo-sdk.
-Huge kudos to Expo team and especially [@nikki93](https://github.com/nikki93) for implementing it.
-
 ## Usage
 
-You can also use this library as way to do vanilla WebGL in React Native. For that, the library will expose `WebGLView` and `Image` (polyfill of browser's `Image`).
+Ths library exposes a `WebGLView` that implements WebGL in React Native.
 
-See [example](example).
+*Basic gist:*
+```js
+import React, { Component } from "react";
+import { WebGLView } from "react-native-webgl";
+class RedSquareWebGL extends Component {
+  onContextCreate = (gl: WebGLRenderingContext) => {
+    const rngl = gl.getExtension("RN");
+    gl.clearColor(1, 0, 0, 1);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    rngl.endFrame();
+  };
+  render() {
+    return (
+      <WebGLView
+        style={{ width: 100, height: 100 }}
+        onContextCreate={this.onContextCreate}
+      />
+    );
+  }
+}
+```
+
+see also [example](example).
+
+## Difference with web's WebGL
+
+### `"RN"` Extension
+The first noticeable difference is the addition of an extension, called `"RN"` that you can get with `gl.getExtension("RN")`. It returns an object with a few functions:
+
+- `endFrame()`: the mandatory call to get anything drawn on screen. It's the way to tell the current implementation everything is finished for the current frame. (we might later introduce better way)
+- `loadTexture(config)`: It is a way to load a `Texture` with a configuration object. There are many format supported (See Texture Config Formats). For instance you can load an image with `{ image: "url_of_the_image" }`. This function returns a **Promise of `{ texture, width, height }`** where texture is the actual `WebGLTexture` instance you can use in a `gl.bindTexture` and width and height is the texture dimension.
+- `unloadTexture(texture)`: allows to unload a texture with the texture object that was returned in a previous `loadTexture`.
+
+#### Texture Config Formats
+
+TO BE WRITTEN
+
+### Missing WebGL features
+
+The current early implementation miss a bunch of WebGL features, meaning that some gl methods won't work.
+
+Here is the methods that are not supported yet:
+
+- `framebufferRenderbuffer`
+- `getFramebufferAttachmentParameter`
+- `bindRenderbuffer`
+- `createRenderbuffer`
+- `deleteRenderbuffer`
+- `getRenderbufferParameter`
+- `renderbufferStorage`
+- `compressedTexImage2D`
+- `compressedTexSubImage2D`
+- `getTexParameter`
+- `texSubImage2D`
+- `getUniform`
+- `getVertexAttrib`
+- `getVertexAttribOffset`
+
+Here is the methods that are partially supported:
+
+- `texImage2D` : works with a few formats only (refer to current implementation). You might want to use `rngl.loadTexture` to load images/camera/videos/whatever textures.
 
 ## Install
 
-It is important to understand that, because gl-react-native is implemented with some C++ bricks, `react-native install react-native-webgl` might not be enough to install and configure your project, please read following notes.
+```bash
+npm i --save react-native-webgl
+# OR
+yarn add react-native-webgl
+```
+
+gl-react-webgl is implemented with some C++ bricks, therefore `react-native link react-native-webgl` is not enough to install and configure your project, please read following notes.
 
 ### Configure your React Native Application
+
+*(TODO: REWRITE THIS. I think maybe we can recommend doing the usual react-native link command and we just need to document what needs to be done on top of it.)*
 
 **on iOS:**
 
@@ -55,3 +119,9 @@ protected List<ReactPackage> getPackages() {
   );
 }
 ```
+
+### Thanks
+
+This implementation is a standalone fork of Expo GLView (MIT License) available on
+https://github.com/expo/expo and https://github.com/expo/expo-sdk.
+Huge kudos to Expo team and especially [@nikki93](https://github.com/nikki93) for implementing it.

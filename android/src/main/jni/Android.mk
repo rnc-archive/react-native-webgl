@@ -6,16 +6,14 @@ LOCAL_EXPORT_C_INCLUDES := $(THIRD_PARTY_NDK_DIR)/jsc
 include $(BUILD_SHARED_LIBRARY)
 
 include $(CLEAR_VARS)
-LOCAL_MODULE := exgl
+LOCAL_MODULE := rnwebgl
 
 LOCAL_C_INCLUDES += ../../../../cpp/
 LOCAL_SRC_FILES := \
-  ../../../../cpp/EXGL.cpp \
-  ../../../../cpp/GLImages.cpp \
-  ../../../../cpp/EXJSUtils.c \
-  ../../../../cpp/EXJSConvertTypedArray.c \
-  EXGL.c \
-  GLImages.c
+  ../../../../cpp/RNWebGL.cpp \
+  ../../../../cpp/JSUtils.c \
+  ../../../../cpp/JSConvertTypedArray.c \
+  RNWebGL.c
 
 # weird hack that lets us mix C++ with -std=c++11 and C with -std=c99
 LOCAL_C99_FILES := $(filter %.c, $(LOCAL_SRC_FILES))

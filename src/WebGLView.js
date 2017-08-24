@@ -5,9 +5,13 @@ import {
   View,
   ViewPropTypes,
   Platform,
+  NativeModules,
   requireNativeComponent
 } from "react-native";
-import type { RNWebGLRenderingContext } from "./types";
+import resolveAssetSource from "react-native/Libraries/Image/resolveAssetSource";
+import type { RNWebGLExtension } from "./types";
+
+const { RNWebGLTextureManager } = NativeModules;
 
 export default class WebGLView extends React.Component {
   props: {
@@ -27,7 +31,12 @@ export default class WebGLView extends React.Component {
   };
 
   render() {
-    const { onContextCreate, msaaSamples, ...viewProps } = this.props;
+    const {
+      onContextCreate,
+      onContextFailure,
+      msaaSamples,
+      ...viewProps
+    } = this.props;
 
     // NOTE: Removing `backgroundColor: "transparent"` causes a performance
     //       regression. Not sure why yet...
@@ -42,35 +51,42 @@ export default class WebGLView extends React.Component {
     );
   }
 
-  _onSurfaceCreate = ({ nativeEvent: { exglCtxId } }) => {
-    const gl = getGl(exglCtxId);
+  _onSurfaceCreate = ({
+    nativeEvent: { ctxId }
+  }: {
+    nativeEvent: { ctxId: number }
+  }) => {
+    const gl = getGl(ctxId);
     if (gl) {
       if (this.props.onContextCreate) {
         this.props.onContextCreate(gl);
       }
     } else {
       if (this.props.onContextFailure) {
-        this.props.onContextFailure(new Error("EXGL context creation failed"));
+        this.props.onContextFailure(
+          new Error("RNWebGL context creation failed")
+        );
       }
     }
   };
 
-  static NativeView = requireNativeComponent("EXGLView", WebGLView, {
+  static NativeView = requireNativeComponent("RNWebGLView", WebGLView, {
     nativeOnly: { onSurfaceCreate: true }
   });
 }
 
 // JavaScript WebGL types to wrap around native objects
 
-global.WebGLRenderingContext = class WebGLRenderingContext {};
+const RNWebGLRenderingContext = class WebGLRenderingContext {};
 
 const idToObject = {};
 
-global.WebGLObject = class WebGLObject {
+const RNWebGLObject = class WebGLObject {
+  id: *;
   constructor(id) {
     if (idToObject[id]) {
       throw new Error(
-        `WebGL object with underlying EXGLObjectId '${id}' already exists!`
+        `WebGL object with underlying RNWebGLTextureId '${id}' already exists!`
       );
     }
     this.id = id; // Native GL object id
@@ -80,7 +96,7 @@ global.WebGLObject = class WebGLObject {
   }
 };
 
-const wrapObject = (type, id) => {
+const wrapObject = (type: Class<RNWebGLObject>, id: *): WebGLObject => {
   const found = idToObject[id];
   if (found) {
     return found;
@@ -88,40 +104,53 @@ const wrapObject = (type, id) => {
   return (idToObject[id] = new type(id));
 };
 
-global.WebGLBuffer = class WebGLBuffer extends WebGLObject {};
+const RNWebGLBuffer = class WebGLBuffer extends RNWebGLObject {};
 
-global.WebGLFramebuffer = class WebGLFramebuffer extends WebGLObject {};
+const RNWebGLFramebuffer = class WebGLFramebuffer extends RNWebGLObject {};
 
-global.WebGLProgram = class WebGLProgram extends WebGLObject {};
+const RNWebGLProgram = class WebGLProgram extends RNWebGLObject {};
 
-global.WebGLRenderbuffer = class WebGLRenderbuffer extends WebGLObject {};
+const RNWebGLRenderbuffer = class WebGLRenderbuffer extends RNWebGLObject {};
 
-global.WebGLShader = class WebGLShader extends WebGLObject {};
+const RNWebGLShader = class WebGLShader extends RNWebGLObject {};
 
-global.WebGLTexture = class WebGLTexture extends WebGLObject {};
+const RNWebGLTexture = class WebGLTexture extends RNWebGLObject {};
 
-global.WebGLUniformLocation = class WebGLUniformLocation {
+const RNWebGLUniformLocation = class WebGLUniformLocation {
+  id: *;
   constructor(id) {
     this.id = id; // Native GL object id
   }
 };
 
-global.WebGLActiveInfo = class WebGLActiveInfo {
+const RNWebGLActiveInfo = class WebGLActiveInfo {
   constructor(obj) {
     Object.assign(this, obj);
   }
 };
 
-global.WebGLShaderPrecisionFormat = class WebGLShaderPrecisionFormat {
+const RNWebGLShaderPrecisionFormat = class WebGLShaderPrecisionFormat {
   constructor(obj) {
     Object.assign(this, obj);
   }
 };
+
+global.WebGLRenderingContext = RNWebGLRenderingContext;
+global.WebGLObject = RNWebGLObject;
+global.WebGLBuffer = RNWebGLBuffer;
+global.WebGLFramebuffer = RNWebGLFramebuffer;
+global.WebGLProgram = RNWebGLProgram;
+global.WebGLRenderbuffer = RNWebGLRenderbuffer;
+global.WebGLShader = RNWebGLShader;
+global.WebGLTexture = RNWebGLTexture;
+global.WebGLUniformLocation = RNWebGLUniformLocation;
+global.WebGLActiveInfo = RNWebGLActiveInfo;
+global.WebGLShaderPrecisionFormat = RNWebGLShaderPrecisionFormat;
 
 // Many functions need wrapping/unwrapping of arguments and return value. We
 // handle each case specifically so we can write the tightest code for
 // better performance.
-const wrapMethods = gl => {
+const wrapMethods = (gl, extension: RNWebGLExtension) => {
   const wrap = (methodNames, wrapper) =>
     (Array.isArray(methodNames) ? methodNames : [methodNames]).forEach(
       methodName => (gl[methodName] = wrapper(gl[methodName]))
@@ -141,7 +170,7 @@ const wrapMethods = gl => {
     let ret = orig.call(gl, pname);
     if (pname === gl.VERSION) {
       // Wrap native version name
-      ret = `WebGL 1.0 (gl-react-native,${Platform.OS}) (${ret})`;
+      ret = `WebGL 1.0 (react-native-webgl,${Platform.OS}) (${ret})`;
     }
     const type = getParameterTypes[pname];
     return type ? wrapObject(type, ret) : ret;
@@ -151,7 +180,7 @@ const wrapMethods = gl => {
   wrap("bindBuffer", orig => (target, buffer) =>
     orig.call(gl, target, buffer && buffer.id)
   );
-  wrap("createBuffer", orig => () => wrapObject(WebGLBuffer, orig.call(gl)));
+  wrap("createBuffer", orig => () => wrapObject(RNWebGLBuffer, orig.call(gl)));
   wrap("deleteBuffer", orig => buffer => orig.call(gl, buffer && buffer.id));
   wrap("isBuffer", orig => buffer =>
     buffer instanceof WebGLBuffer && orig.call(gl, buffer.id)
@@ -162,7 +191,7 @@ const wrapMethods = gl => {
     orig.call(gl, target, framebuffer && framebuffer.id)
   );
   wrap("createFramebuffer", orig => () =>
-    wrapObject(WebGLFramebuffer, orig.call(gl))
+    wrapObject(RNWebGLFramebuffer, orig.call(gl))
   );
   wrap("deleteFramebuffer", orig => framebuffer =>
     orig.call(gl, framebuffer && framebuffer.id)
@@ -184,7 +213,7 @@ const wrapMethods = gl => {
     orig.call(gl, target, renderbuffer && renderbuffer.id)
   );
   wrap("createRenderbuffer", orig => () =>
-    wrapObject(WebGLRenderbuffer, orig.call(gl))
+    wrapObject(RNWebGLRenderbuffer, orig.call(gl))
   );
   wrap("deleteRenderbuffer", orig => renderbuffer =>
     orig.call(gl, renderbuffer && renderbuffer.id)
@@ -197,7 +226,9 @@ const wrapMethods = gl => {
   wrap("bindTexture", orig => (target, texture) =>
     orig.call(gl, target, texture && texture.id)
   );
-  wrap("createTexture", orig => () => wrapObject(WebGLTexture, orig.call(gl)));
+  wrap("createTexture", orig => () =>
+    wrapObject(RNWebGLTexture, orig.call(gl))
+  );
   wrap("deleteTexture", orig => texture =>
     orig.call(gl, texture && texture.id)
   );
@@ -213,9 +244,11 @@ const wrapMethods = gl => {
     orig.call(gl, program && program.id, index, name)
   );
   wrap("compileShader", orig => shader => orig.call(gl, shader && shader.id));
-  wrap("createProgram", orig => () => wrapObject(WebGLProgram, orig.call(gl)));
+  wrap("createProgram", orig => () =>
+    wrapObject(RNWebGLProgram, orig.call(gl))
+  );
   wrap("createShader", orig => type =>
-    wrapObject(WebGLShader, orig.call(gl, type))
+    wrapObject(RNWebGLShader, orig.call(gl, type))
   );
   wrap("deleteProgram", orig => program =>
     orig.call(gl, program && program.id)
@@ -225,7 +258,9 @@ const wrapMethods = gl => {
     orig.call(gl, program && program.id, shader && shader.id)
   );
   wrap("getAttachedShaders", orig => program =>
-    orig.call(gl, program && program.id).map(id => wrapObject(WebGLShader, id))
+    orig
+      .call(gl, program && program.id)
+      .map(id => wrapObject(RNWebGLShader, id))
   );
   wrap("getProgramParameter", orig => (program, pname) =>
     orig.call(gl, program && program.id, pname)
@@ -237,6 +272,7 @@ const wrapMethods = gl => {
     orig.call(gl, shader && shader.id, pname)
   );
   wrap("getShaderPrecisionFormat", orig => (shadertype, precisiontype) =>
+    // $FlowFixMe
     new WebGLShaderPrecisionFormat(orig.call(gl, shadertype, precisiontype))
   );
   wrap("getShaderInfoLog", orig => shader =>
@@ -258,11 +294,18 @@ const wrapMethods = gl => {
     program instanceof WebGLProgram && orig.call(gl, program.id)
   );
 
+  wrap("getExtension", orig => id => {
+    if (id === "RN") return extension;
+    return orig.call(gl, id);
+  });
+
   // Uniforms and attributes
   wrap("getActiveAttrib", orig => (program, index) =>
+    // $FlowFixMe
     new WebGLActiveInfo(orig.call(gl, program && program.id, index))
   );
   wrap("getActiveUniform", orig => (program, index) =>
+    // $FlowFixMe
     new WebGLActiveInfo(orig.call(gl, program && program.id, index))
   );
   wrap("getAttribLocation", orig => (program, name) =>
@@ -272,6 +315,7 @@ const wrapMethods = gl => {
     orig.call(gl, program && program.id, location && location.id)
   );
   wrap("getUniformLocation", orig => (program, name) =>
+    // $FlowFixMe
     new WebGLUniformLocation(orig.call(gl, program && program.id, name))
   );
   wrap(["uniform1f", "uniform1i"], orig => (loc, x) =>
@@ -310,24 +354,49 @@ const wrapMethods = gl => {
   );
 };
 
-// Get the GL interface from an EXGLContextID and do JS-side setup
-const getGl = exglCtxId => {
-  if (!global.__EXGLContexts) {
+// Get the GL interface from an RNWebGLContextID and do JS-side setup
+const getGl = (ctxId: number): ?RNWebGLRenderingContext => {
+  if (!global.__RNWebGLContexts) {
     console.warn(
-      "EXGL: Can only run on JavaScriptCore! Do you have 'Remote Debugging' enabled in your app's Developer Menu (https://facebook.github.io/react-native/docs/debugging.html)? EXGL is not supported while using Remote Debugging, you will need to disable it to use EXGL."
+      "RNWebGL: Can only run on JavaScriptCore! Do you have 'Remote Debugging' enabled in your app's Developer Menu (https://facebook.github.io/react-native/docs/debugging.html)? RNWebGL is not supported while using Remote Debugging, you will need to disable it to use RNWebGL."
     );
     return null;
   }
-  const gl = global.__EXGLContexts[exglCtxId];
-  gl.__exglCtxId = exglCtxId;
-  delete global.__EXGLContexts[exglCtxId];
+  const gl = global.__RNWebGLContexts[ctxId];
+  gl.__ctxId = ctxId;
+  delete global.__RNWebGLContexts[ctxId];
   if (Object.setPrototypeOf) {
     Object.setPrototypeOf(gl, global.WebGLRenderingContext.prototype);
   } else {
     gl.__proto__ = global.WebGLRenderingContext.prototype;
   }
 
-  wrapMethods(gl);
+  const endFrame = gl.__endFrame;
+  delete gl.__endFrame;
+
+  // extension object retrievable with gl.getExtension("RNWebGL")
+  const extension: RNWebGLExtension = {
+    loadTexture: config => {
+      const arg = {
+        ...config,
+        ctxId
+      };
+      if (typeof arg.image === "number") {
+        // Resolve RN local asset require()
+        arg.image = resolveAssetSource(arg.image);
+      }
+      return RNWebGLTextureManager.create(
+        arg
+      ).then(({ objId, width, height }) => {
+        const texture = new RNWebGLTexture(objId);
+        return { texture, width, height };
+      });
+    },
+    unloadTexture: texture => RNWebGLTextureManager.destroy(texture.id),
+    endFrame: endFrame.bind(gl)
+  };
+
+  wrapMethods(gl, extension);
 
   gl.canvas = null;
 

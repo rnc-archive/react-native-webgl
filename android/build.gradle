@@ -48,7 +48,7 @@ def findNdkBuildFullPath() {
     return new File(ndkDir, getNdkBuildName()).getAbsolutePath()
   }
   def ndkDir = android.hasProperty('plugin') ? android.plugin.ndkFolder :
-          plugins.getPlugin('com.android.library').sdkHandler.getNdkFolder()
+  project.android.ndkDirectory.absolutePath
   if (ndkDir) {
     return new File(ndkDir, getNdkBuildName()).getAbsolutePath()
   }
@@ -95,7 +95,7 @@ task prepareJSC(dependsOn: downloadJSCHeaders) << {
   }
 }
 
-task buildEXGLLib(dependsOn: [prepareJSC], type: Exec) {
+task buildRNWebGLLib(dependsOn: [prepareJSC], type: Exec) {
   inputs.file('src/main/jni')
   inputs.file('../cpp')
   outputs.dir("$buildDir/exgl/all")
@@ -109,13 +109,13 @@ task buildEXGLLib(dependsOn: [prepareJSC], type: Exec) {
           '--jobs', Runtime.runtime.availableProcessors()
 }
 
-task cleanEXGLLib(type: Exec) {
+task cleanRNWebGLLib(type: Exec) {
   commandLine getNdkBuildFullPath(),
           '-C', file('src/main/jni').absolutePath,
           'clean'
 }
 
-task packageEXGLLibs(dependsOn: buildEXGLLib, type: Copy) {
+task packageRNWebGLLibs(dependsOn: buildRNWebGLLib, type: Copy) {
   from "$buildDir/exgl/all"
   exclude '**/libjsc.so'
   exclude '**/libgnustl_shared.so'
@@ -124,7 +124,7 @@ task packageEXGLLibs(dependsOn: buildEXGLLib, type: Copy) {
 
 android {
   compileSdkVersion 24
-  buildToolsVersion "24.0.3"
+  buildToolsVersion '25.0.0'
 
   defaultConfig {
     minSdkVersion 17
@@ -140,9 +140,9 @@ android {
       jniLibs.srcDir "$buildDir/exgl/exported"
     }
     tasks.withType(JavaCompile) {
-      compileTask -> compileTask.dependsOn packageEXGLLibs
+      compileTask -> compileTask.dependsOn packageRNWebGLLibs
     }
-    clean.dependsOn cleanEXGLLib
+    clean.dependsOn cleanRNWebGLLib
   }
 }
 
