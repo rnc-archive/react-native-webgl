@@ -16,6 +16,10 @@
     "LICENSE",
     "README.md"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/react-community/react-native-webgl.git"
+  },
   "peerDependencies": {
     "react": "*",
     "react-native": "*"
