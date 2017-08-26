@@ -7,7 +7,7 @@
 #import <React/RCTUtils.h>
 
 #import "RNWebGL.h"
-
+#import "RNWebGLTextureLoader.h"
 #import "GPUImage.h"
 
 @interface RNWebGLView ()
@@ -209,6 +209,9 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init);
 {
   // Destroy JS binding
   RNWebGLContextDestroy(_ctxId);
+  
+  // Destroy all objects created to not leak pending work
+  [_viewManager.bridge.webglObjectLoader unloadWithCtxId:_ctxId];
 
   // Destroy GL objects owned by us
   [self deleteViewBuffers];

@@ -7,7 +7,7 @@ import android.opengl.GLUtils;
 import com.facebook.react.bridge.ReadableMap;
 import static android.opengl.GLES20.*;
 
-class RNWebGLTextureBitmap extends RNWebGLTexture implements Runnable {
+public class RNWebGLTextureBitmap extends RNWebGLTexture implements Runnable {
 
     final Bitmap bitmap;
 

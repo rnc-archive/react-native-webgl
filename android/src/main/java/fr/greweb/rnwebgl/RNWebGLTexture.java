@@ -3,7 +3,7 @@ package fr.greweb.rnwebgl;
 import com.facebook.react.bridge.ReadableMap;
 import static fr.greweb.rnwebgl.RNWebGL.*;
 
-class RNWebGLTexture {
+public class RNWebGLTexture {
     public final int ctxId;
     public final int objId;
     public final int width;

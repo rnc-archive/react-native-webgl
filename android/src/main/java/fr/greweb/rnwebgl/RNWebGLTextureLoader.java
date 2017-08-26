@@ -68,4 +68,19 @@ public class RNWebGLTextureLoader extends ReactContextBaseJavaModule {
             obj.destroy();
         }
     }
+
+    public void unloadWithCtxId (int ctxId) {
+        SparseArray<RNWebGLTexture> remaining = new SparseArray<>();
+        for(int i = 0; i < mObjects.size(); i++) {
+            int objId = mObjects.keyAt(i);
+            RNWebGLTexture obj = mObjects.get(objId);
+            if (obj.ctxId == ctxId) {
+                obj.destroy();
+            }
+            else {
+                remaining.put(objId, obj);
+            }
+        }
+        mObjects = remaining;
+    }
 }

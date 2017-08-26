@@ -20,6 +20,8 @@ typedef void (^RNWebGLTextureCompletionBlock)(NSError *error, RNWebGLTexture *ob
 
 -(void)unloadWithObjId:(RNWebGLTextureId)id;
 
+-(void)unloadWithCtxId:(RNWebGLContextId)id;
+
 @end
 
 

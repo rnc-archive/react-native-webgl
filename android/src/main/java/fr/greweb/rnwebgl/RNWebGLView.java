@@ -10,6 +10,7 @@ import android.util.SparseArray;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.WritableMap;
+import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.react.uimanager.events.RCTEventEmitter;
 
 import java.util.ArrayList;
@@ -22,9 +23,11 @@ import static fr.greweb.rnwebgl.RNWebGL.*;
 public class RNWebGLView extends GLSurfaceView implements GLSurfaceView.Renderer {
   private boolean onSurfaceCreateCalled = false;
   private int ctxId = -1;
+  private ThemedReactContext reactContext;
 
-  public RNWebGLView(Context context) {
+  public RNWebGLView(ThemedReactContext context) {
     super(context);
+    reactContext = context;
 
     setEGLContextClientVersion(2);
     setEGLConfigChooser(8, 8, 8, 8, 16, 0);
@@ -77,6 +80,7 @@ public class RNWebGLView extends GLSurfaceView implements GLSurfaceView.Renderer
 
   public void onDetachedFromWindow() {
     mGLViewMap.remove(ctxId);
+    reactContext.getNativeModule(RNWebGLTextureLoader.class).unloadWithCtxId(ctxId);
     RNWebGLContextDestroy(ctxId);
     super.onDetachedFromWindow();
   }

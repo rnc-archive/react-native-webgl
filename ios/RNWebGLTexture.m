@@ -17,6 +17,10 @@
   RNWebGLContextMapObject(_ctxId, _objId, texture);
 }
 
+- (void)unload {
+  // this is meant to be overrided by implementations. they should dispose everything so the dealloc below is reached
+}
+
 - (void)dealloc
 {
   if (_objId != 0) {

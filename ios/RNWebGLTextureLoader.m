@@ -52,7 +52,22 @@ RCT_EXPORT_MODULE()
 }
 
 -(void)unloadWithObjId:(RNWebGLTextureId)objId {
-  [_objects removeObjectForKey:@(objId)];
+  NSNumber *key = @(objId);
+  RNWebGLTexture *t = _objects[key];
+  if (t) {
+    [t unload];
+    [_objects removeObjectForKey:key];
+  }
+}
+
+-(void)unloadWithCtxId:(RNWebGLContextId)ctxId {
+  for (NSNumber *key in [_objects keyEnumerator]) {
+    RNWebGLTexture *t = _objects[key];
+    if (t.ctxId == ctxId) {
+      [t unload];
+      [_objects removeObjectForKey:key];
+    }
+  }
 }
 
 @end
