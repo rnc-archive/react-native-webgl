@@ -1,10 +1,14 @@
 {
   "name": "react-native-webgl",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "license": "BSD",
   "author": "Gaëtan Renaudeau <renaudeau.gaetan@gmail.com>",
   "description": "React Native implementation of WebGL",
-  "keywords": ["react", "react-native", "webgl"],
+  "keywords": [
+    "react",
+    "react-native",
+    "webgl"
+  ],
   "main": "lib/index.js",
   "repository": {
     "type": "git",
@@ -15,8 +19,7 @@
     "react-native": "*"
   },
   "scripts": {
-    "prepublish":
-      "babel --source-maps -d lib src && flow-copy-source -v src lib",
+    "prepublish": "babel --source-maps -d lib src && flow-copy-source -v src lib",
     "watch": "babel --watch --source-maps -d lib src"
   },
   "dependencies": {
