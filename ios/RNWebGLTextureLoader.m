@@ -61,13 +61,15 @@ RCT_EXPORT_MODULE()
 }
 
 -(void)unloadWithCtxId:(RNWebGLContextId)ctxId {
+  NSMutableArray *unloadedKeys = [NSMutableArray array];
   for (NSNumber *key in [_objects keyEnumerator]) {
     RNWebGLTexture *t = _objects[key];
     if (t.ctxId == ctxId) {
       [t unload];
-      [_objects removeObjectForKey:key];
+      [unloadedKeys addObject:key];
     }
   }
+  [_objects removeObjectsForKeys:unloadedKeys];
 }
 
 @end
