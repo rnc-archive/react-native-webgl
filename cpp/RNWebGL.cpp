@@ -24,6 +24,8 @@
 #include "JSUtils.h"
 #include "JSConvertTypedArray.h"
 
+#include <stdlib.h>
+
 #ifdef __APPLE__
 #include "EXiOSUtils.h"
 #endif
