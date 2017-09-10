@@ -236,16 +236,6 @@ public:
     defaultFramebuffer = framebuffer;
   }
 
-  // --- GL ReadPixels extension -----------------------------------------------
-    
-public:
-  void readPixelsRGBA(GLint x, GLint y, GLint w, GLint h, GLvoid* pixels, void(^onDone)(void)) {
-    addToNextBatch([&]{
-      glReadPixels(x, y, w, h, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
-      onDone(); // FIXME EXC_BAD_ACCESS here. somehow the block is no longer allocated? any other simpler way to tell pixels are filled and finish the work on iOS/Android side?
-    });
-  }
-
   // --- Actual GL bindings ----------------------------------------------------
 private:
 
@@ -1924,12 +1914,4 @@ void RNWebGLContextMapObject(RNWebGLContextId ctxId, RNWebGLTextureId objId, GLu
   if (exglCtx) {
     exglCtx->mapObject(objId, glObj);
   }
-}
-
-    
-void RNWebGLContextReadPixelsRGBA(RNWebGLContextId ctxId, GLuint x, GLuint y, GLuint w, GLuint h, void* dataToFill, void(^onDone)(void)) {
-    auto exglCtx = RNWebGLContextGet(ctxId);
-    if (exglCtx) {
-      exglCtx->readPixelsRGBA(x, y, w, h, dataToFill, onDone);
-    }
 }

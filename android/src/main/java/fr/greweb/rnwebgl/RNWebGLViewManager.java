@@ -1,5 +1,10 @@
 package fr.greweb.rnwebgl;
 
+import android.util.Log;
+
+import com.facebook.react.bridge.Promise;
+import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.common.MapBuilder;
 import com.facebook.react.uimanager.SimpleViewManager;
 import com.facebook.react.uimanager.ThemedReactContext;
@@ -27,4 +32,9 @@ public class RNWebGLViewManager extends SimpleViewManager<RNWebGLView> {
             "surfaceCreate",
             MapBuilder.of("registrationName", "onSurfaceCreate"));
   }
-}
+
+  @ReactMethod
+  public void create(int ctxId, int x, int y, int w, int h, ReadableMap options, Promise promise) {
+    Log.d("RNWebGL", ctxId+" "+x+","+y+" "+w+"x"+h);
+  }
+  }

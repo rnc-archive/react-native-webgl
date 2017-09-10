@@ -1,7 +1,7 @@
 //@flow
 import { NativeModules } from "react-native";
 import { RNWebGLTexture } from "./webglTypes";
-const { RNWebGLTextureManager, RNWebGLViewManager } = NativeModules;
+const { RNWebGLTextureManager } = NativeModules;
 
 type RNWebGLRenderingContext = WebGLRenderingContext & {
   __endFrame: *,
@@ -16,18 +16,7 @@ export type Extension = {
     config: Config
   ) => Promise<{ texture: RNWebGLTexture, width: number, height: number }>,
   unloadTexture: (texture: RNWebGLTexture) => void,
-  endFrame: () => void,
-  // IDEA add a requestFrame() to hide the need to call endFrame
-  readPixelsToTemporaryFile: (
-    x: number,
-    y: number,
-    w: number,
-    h: number,
-    options?: {
-      format?: string,
-      quality?: number
-    }
-  ) => Promise<string>
+  endFrame: () => void
 };
 
 type Middleware = (extIn: Extension) => Extension;
@@ -49,23 +38,6 @@ export default {
           return { texture, width, height };
         }),
       unloadTexture: texture => RNWebGLTextureManager.destroy(texture.id),
-      endFrame: gl.__endFrame.bind(gl),
-      readPixelsToTemporaryFile: (x, y, w, h, options): Promise<string> => {
-        if (
-          typeof x !== "number" ||
-          typeof y !== "number" ||
-          typeof w !== "number" ||
-          typeof h !== "number"
-        ) {
-          throw new Error(
-            `gl.readPixelsToTemporaryFile(x, y, w, h, [options]): invalid params. Got (${x},${y},${w},${h}) but expected numbers.`
-          );
-        }
-        return RNWebGLViewManager.readPixelsToTemporaryFile(ctxId, x, y, w, h, {
-          format: "png",
-          quality: 1,
-          ...options
-        });
-      }
+      endFrame: gl.__endFrame.bind(gl)
     })
 };
