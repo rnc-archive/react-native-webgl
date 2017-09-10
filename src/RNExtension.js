@@ -48,11 +48,7 @@ export default {
           return { texture, width, height };
         }),
       unloadTexture: texture => RNWebGLTextureManager.destroy(texture.id),
-      endFrame: gl.__endFrame.bind(gl),
-      readPixelsToTemporaryFile: gl.__readPixelsToTemporaryFile
-        ? gl.__readPixelsToTemporaryFile.bind(gl)
-        : () => {
-            throw new Error("readPixelsToTemporaryFile is not yet implemented");
-          }
+      endFrame: gl.__endFrame.bind(gl)
+      //readPixelsToTemporaryFile: gl.__readPixelsToTemporaryFile.bind(gl) // TODO
     })
 };

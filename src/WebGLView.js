@@ -56,8 +56,8 @@ export default class WebGLView extends React.Component {
 
   render() {
     const {
-      onContextCreate,
-      onContextFailure,
+      onContextCreate, // eslint-disable-line no-unused-vars
+      onContextFailure, // eslint-disable-line no-unused-vars
       msaaSamples,
       ...viewProps
     } = this.props;

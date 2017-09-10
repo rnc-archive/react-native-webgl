@@ -6,7 +6,6 @@ import {
   RNWebGLObject,
   RNWebGLProgram,
   RNWebGLRenderbuffer,
-  RNWebGLRenderingContext,
   RNWebGLShader,
   RNWebGLTexture
 } from "./webglTypes";
