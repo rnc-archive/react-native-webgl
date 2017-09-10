@@ -56,6 +56,8 @@ void RNWebGLContextDestroyObject(RNWebGLContextId ctxId, RNWebGLTextureId id);
 // [GL thread] Set the underlying OpenGL object an RNWebGL object maps to.
 void RNWebGLContextMapObject(RNWebGLContextId ctxId, RNWebGLTextureId id, GLuint glObj);
 
+void RNWebGLContextReadPixelsRGBA(RNWebGLContextId ctxId, GLuint x, GLuint y, GLuint w, GLuint h, void* dataToFill, void(^onDone)(void));
+    
 #ifdef __cplusplus
 }
 #endif
