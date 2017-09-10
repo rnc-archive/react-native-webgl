@@ -55,7 +55,7 @@ void RNWebGLContextDestroyObject(RNWebGLContextId ctxId, RNWebGLTextureId id);
 
 // [GL thread] Set the underlying OpenGL object an RNWebGL object maps to.
 void RNWebGLContextMapObject(RNWebGLContextId ctxId, RNWebGLTextureId id, GLuint glObj);
-
+    
 #ifdef __cplusplus
 }
 #endif

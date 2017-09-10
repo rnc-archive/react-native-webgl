@@ -236,7 +236,6 @@ public:
     defaultFramebuffer = framebuffer;
   }
 
-
   // --- Actual GL bindings ----------------------------------------------------
 private:
 

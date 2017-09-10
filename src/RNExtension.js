@@ -16,17 +16,7 @@ export type Extension = {
     config: Config
   ) => Promise<{ texture: RNWebGLTexture, width: number, height: number }>,
   unloadTexture: (texture: RNWebGLTexture) => void,
-  endFrame: () => void, // IDEA add a requestFrame() to hide the need to call endFrame
-  readPixelsToTemporaryFile: (
-    x: number,
-    y: number,
-    w: number,
-    h: number,
-    options?: {
-      format?: string,
-      quality?: number
-    }
-  ) => Promise<string>
+  endFrame: () => void
 };
 
 type Middleware = (extIn: Extension) => Extension;
@@ -49,6 +39,5 @@ export default {
         }),
       unloadTexture: texture => RNWebGLTextureManager.destroy(texture.id),
       endFrame: gl.__endFrame.bind(gl)
-      //readPixelsToTemporaryFile: gl.__readPixelsToTemporaryFile.bind(gl) // TODO
     })
 };

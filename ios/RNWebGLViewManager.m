@@ -1,5 +1,4 @@
 #import "RNWebGLViewManager.h"
-
 #import "RNWebGLView.h"
 
 @implementation RNWebGLViewManager

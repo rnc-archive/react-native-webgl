@@ -60,8 +60,8 @@
 		34613D731F4AD9CD00A73403 /* RNWebGLView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNWebGLView.h; sourceTree = "<group>"; };
 		34613D741F4AD9CD00A73403 /* RNWebGLView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNWebGLView.m; sourceTree = "<group>"; };
 		34613D751F4AD9CD00A73403 /* RNWebGLViewManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNWebGLViewManager.h; sourceTree = "<group>"; };
-		34613D761F4AD9CD00A73403 /* RNWebGLViewManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNWebGLViewManager.m; sourceTree = "<group>"; };
-		34613DA21F4ADA3700A73403 /* RNWebGL.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = RNWebGL.cpp; path = ../cpp/RNWebGL.cpp; sourceTree = "<group>"; };
+		34613D761F4AD9CD00A73403 /* RNWebGLViewManager.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; path = RNWebGLViewManager.m; sourceTree = "<group>"; tabWidth = 2; };
+		34613DA21F4ADA3700A73403 /* RNWebGL.cpp */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.cpp.cpp; name = RNWebGL.cpp; path = ../cpp/RNWebGL.cpp; sourceTree = "<group>"; tabWidth = 2; };
 		34613DA31F4ADA3700A73403 /* RNWebGL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RNWebGL.h; path = ../cpp/RNWebGL.h; sourceTree = "<group>"; };
 		34844F2C1F4D724C0027C8D9 /* RNWebGLTextureWithGPUImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNWebGLTextureWithGPUImage.h; sourceTree = "<group>"; };
 		34844F2D1F4D724C0027C8D9 /* RNWebGLTextureWithGPUImage.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; path = RNWebGLTextureWithGPUImage.m; sourceTree = "<group>"; tabWidth = 2; };

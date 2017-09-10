@@ -13,7 +13,6 @@ import pkg from "react-native-webgl/package.json";
 
 import HelloGL from "./HelloGL";
 import BasicTexture from "./BasicTexture";
-import ReadPixels from "./ReadPixels";
 
 const ExampleRoutes = {
   HelloGL: {
@@ -23,10 +22,6 @@ const ExampleRoutes = {
   BasicTexture: {
     description: "Basic example of an Image Texture drawn with effects",
     screen: BasicTexture
-  },
-  ReadPixels: {
-    description: "readPixelsToTemporaryFile test",
-    screen: ReadPixels
   }
 };
 
