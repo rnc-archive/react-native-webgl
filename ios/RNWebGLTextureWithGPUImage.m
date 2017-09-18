@@ -16,11 +16,13 @@
     output = [[GPUImageTextureOutput alloc] init];
     output.delegate = self;
     if (!yflip) {
+      [source useNextFrameForImageCapture];
       [source addTarget:output];
     }
     else {
       filter = [[GPUImageCropFilter alloc] init];
       [filter setInputRotation:kGPUImageFlipVertical atIndex:0];
+      [filter useNextFrameForImageCapture];
       [filter addTarget:output];
       [source addTarget:filter];
     }
