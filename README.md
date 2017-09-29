@@ -18,6 +18,13 @@ yarn add react-native-webgl
 react-native link react-native-webgl
 ```
 
+> **IMPORTANT: you must also manually do the following:**
+
+**on iOS:**
+
+in your XCode project,
+- if it not there, add `libRNWebGL.a` in the Linked Libraries of your project target (and remove the potential `libGPUImage.a` if it not needed). There is a "bug" with `react-native link`.
+
 **on Android:**
 
 react-native-webgl is implemented with some C++ bricks and `react-native link react-native-webgl` is not enough to install and configure your project for Android:
