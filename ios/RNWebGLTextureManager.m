@@ -11,7 +11,7 @@ RCT_EXPORT_METHOD(create:(NSDictionary *)config
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject)
 {
-  [_bridge.webglObjectLoader loadWithConfig:config withCompletionBlock:^(NSError *error, RNWebGLTexture *obj) {
+  [_bridge.webglObjectLoader loadWithConfigAndWaitAttached:config withCompletionBlock:^(NSError *error, RNWebGLTexture *obj) {
     if (error) {
       reject(error.domain, error.description, error);
     }

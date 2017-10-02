@@ -15,8 +15,8 @@
     bool yflip = [RCTConvert BOOL:config[@"yflip"]];
     output = [[GPUImageTextureOutput alloc] init];
     output.delegate = self;
+    [source useNextFrameForImageCapture];
     if (!yflip) {
-      [source useNextFrameForImageCapture];
       [source addTarget:output];
     }
     else {

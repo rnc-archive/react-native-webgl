@@ -82,7 +82,22 @@ void main() {
           return texture;
         });
       })
-    ).then(() => console.log("all loaded"));
+    );
+    // if needed this is the code to render only once when all images loaded
+    /*
+    .then(textures => {
+
+      textures.forEach((texture, i) => {
+        const loc = gl.getUniformLocation(program, "t" + (i + 1));
+        gl.activeTexture(gl.TEXTURE0 + i);
+        gl.bindTexture(gl.TEXTURE_2D, texture);
+        gl.uniform1i(loc, i);
+      });
+      gl.drawArrays(gl.TRIANGLES, 0, 3);
+      gl.flush();
+      rngl.endFrame();
+    });
+    */
   };
   render() {
     return (

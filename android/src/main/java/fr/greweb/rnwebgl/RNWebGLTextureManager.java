@@ -22,7 +22,7 @@ public class RNWebGLTextureManager extends ReactContextBaseJavaModule {
     public void create(final ReadableMap config, final Promise promise) {
         this.getReactApplicationContext()
                 .getNativeModule(RNWebGLTextureLoader.class)
-                .loadWithConfig(config, new RNWebGLTextureCompletionBlock() {
+                .loadWithConfigAndWaitAttached(config, new RNWebGLTextureCompletionBlock() {
             public void call(Exception e, RNWebGLTexture obj) {
                 if (e != null) {
                     promise.reject(e);

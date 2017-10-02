@@ -6,7 +6,7 @@ typedef void (^RNWebGLTextureCompletionBlock)(NSError *error, RNWebGLTexture *ob
 @protocol RNWebGLTextureConfigLoader <RCTBridgeModule>
 -(BOOL)canLoadConfig:(NSDictionary *)config;
 -(void)loadWithConfig:(NSDictionary *)config
-              withCompletionBlock:(RNWebGLTextureCompletionBlock)callback;
+  withCompletionBlock:(RNWebGLTextureCompletionBlock)callback;
 @end
 
 @interface RNWebGLTextureLoader: NSObject <RCTBridgeModule>
@@ -17,6 +17,9 @@ typedef void (^RNWebGLTextureCompletionBlock)(NSError *error, RNWebGLTexture *ob
 
 -(void)loadWithConfig:(NSDictionary *)config
               withCompletionBlock:(RNWebGLTextureCompletionBlock)callback;
+
+-(void)loadWithConfigAndWaitAttached:(NSDictionary *)config
+                 withCompletionBlock:(RNWebGLTextureCompletionBlock)callback;
 
 -(void)unloadWithObjId:(RNWebGLTextureId)id;
 

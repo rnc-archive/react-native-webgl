@@ -41,7 +41,6 @@ public class RNWebGLTextureLoader extends ReactContextBaseJavaModule {
         return null;
     }
 
-
     public void loadWithConfig (final ReadableMap config, final RNWebGLTextureCompletionBlock callback) {
         RNWebGLTextureConfigLoader loader = this.objectLoaderForConfig(config);
         if (loader == null) {
@@ -59,6 +58,24 @@ public class RNWebGLTextureLoader extends ReactContextBaseJavaModule {
                 }
             });
         }
+    }
+
+    public void loadWithConfigAndWaitAttached (final ReadableMap config, final RNWebGLTextureCompletionBlock callback) {
+        loadWithConfig(config, new RNWebGLTextureCompletionBlock() {
+            @Override
+            public void call(final Exception e, final RNWebGLTexture obj) {
+                if (obj.isAttached()) {
+                    callback.call(e, obj);
+                }
+                else {
+                    obj.listenAttached(new Runnable() {
+                        public void run() {
+                            callback.call(e, obj);
+                        }
+                    });
+                }
+            }
+        });
     }
 
     public void unloadWithObjId (int objId) {

@@ -51,6 +51,20 @@ RCT_EXPORT_MODULE()
   }
 }
 
+-(void)loadWithConfigAndWaitAttached:(NSDictionary *)config
+                 withCompletionBlock:(RNWebGLTextureCompletionBlock)callback {
+  [self loadWithConfig:config withCompletionBlock:^(NSError *error, RNWebGLTexture *obj) {
+    if ([obj isAttached]) {
+      callback(error, obj);
+    }
+    else {
+      [obj listenAttached:^{
+        callback(error, obj);
+      }];
+    }
+  }];
+}
+
 -(void)unloadWithObjId:(RNWebGLTextureId)objId {
   NSNumber *key = @(objId);
   RNWebGLTexture *t = _objects[key];
