@@ -12,6 +12,7 @@ import { StackNavigator } from "react-navigation";
 import pkg from "react-native-webgl/package.json";
 
 import HelloGL from "./HelloGL";
+import NineTextures from "./NineTextures";
 import BasicTexture from "./BasicTexture";
 
 const ExampleRoutes = {
@@ -22,6 +23,10 @@ const ExampleRoutes = {
   BasicTexture: {
     description: "Basic example of an Image Texture drawn with effects",
     screen: BasicTexture
+  },
+  NineTextures: {
+    description: "Simple Grid Example using 9 images",
+    screen: NineTextures
   }
 };
 
