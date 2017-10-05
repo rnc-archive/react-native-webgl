@@ -45,16 +45,20 @@ vec4 colorLookup (in sampler2D s, vec2 p) {
          texture2D(s, p);
 }
 void main() {
+  vec2 p = uv + .02 * vec2(
+    cos(9. * uv.y),
+    sin(20. * uv.x)
+  );
   gl_FragColor =
-    colorLookup(t1, uv * 3.0 - vec2(0., 0.)) +
-    colorLookup(t2, uv * 3.0 - vec2(1., 0.)) +
-    colorLookup(t3, uv * 3.0 - vec2(2., 0.)) +
-    colorLookup(t4, uv * 3.0 - vec2(0., 1.)) +
-    colorLookup(t5, uv * 3.0 - vec2(1., 1.)) +
-    colorLookup(t6, uv * 3.0 - vec2(2., 1.)) +
-    colorLookup(t7, uv * 3.0 - vec2(0., 2.)) +
-    colorLookup(t8, uv * 3.0 - vec2(1., 2.)) +
-    colorLookup(t9, uv * 3.0 - vec2(2., 2.));
+    colorLookup(t1, p * 3.0 - vec2(0., 0.)) +
+    colorLookup(t2, p * 3.0 - vec2(1., 0.)) +
+    colorLookup(t3, p * 3.0 - vec2(2., 0.)) +
+    colorLookup(t4, p * 3.0 - vec2(0., 1.)) +
+    colorLookup(t5, p * 3.0 - vec2(1., 1.)) +
+    colorLookup(t6, p * 3.0 - vec2(2., 1.)) +
+    colorLookup(t7, p * 3.0 - vec2(0., 2.)) +
+    colorLookup(t8, p * 3.0 - vec2(1., 2.)) +
+    colorLookup(t9, p * 3.0 - vec2(2., 2.));
 }`
     );
     gl.compileShader(fragmentShader);
