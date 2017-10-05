@@ -45,10 +45,14 @@ public class RNWebGLTextureBitmap extends RNWebGLTexture implements Runnable {
         int[] textures = new int[1];
         glGenTextures(1, textures, 0);
         glTexture = textures[0];
+        int[] boundedBefore = new int[1];
+        glGetIntegerv(GL_TEXTURE_BINDING_2D, boundedBefore, 0);
         glBindTexture(GL_TEXTURE_2D, glTexture);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         GLUtils.texImage2D(GL_TEXTURE_2D, 0, bitmap, 0);
+        // Restore the previous texture bind to not affect user code
+        glBindTexture(GL_TEXTURE_2D, boundedBefore[0]);
         this.attachTexture(glTexture);
     }
 }
