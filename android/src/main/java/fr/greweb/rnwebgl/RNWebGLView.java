@@ -58,7 +58,7 @@ public class RNWebGLView extends GLSurfaceView implements GLSurfaceView.Renderer
     }
   }
 
-  public void onDrawFrame(GL10 unused) {
+  public synchronized void onDrawFrame(GL10 unused) {
     // Flush any queued events
     for (Runnable r : mEventQueue) {
       r.run();
@@ -83,11 +83,11 @@ public class RNWebGLView extends GLSurfaceView implements GLSurfaceView.Renderer
     super.onDetachedFromWindow();
   }
 
-  public void runOnGLThread(Runnable r) {
+  public synchronized void runOnGLThread(Runnable r) {
     mEventQueue.add(r);
   }
 
-  public static void runOnGLThread(int ctxId, Runnable r) {
+  public synchronized static void runOnGLThread(int ctxId, Runnable r) {
     RNWebGLView glView = mGLViewMap.get(ctxId);
     if (glView != null) {
       glView.runOnGLThread(r);
