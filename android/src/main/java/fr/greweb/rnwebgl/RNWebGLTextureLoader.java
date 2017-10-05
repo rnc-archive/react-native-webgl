@@ -64,16 +64,11 @@ public class RNWebGLTextureLoader extends ReactContextBaseJavaModule {
         loadWithConfig(config, new RNWebGLTextureCompletionBlock() {
             @Override
             public void call(final Exception e, final RNWebGLTexture obj) {
-                if (obj.isAttached()) {
-                    callback.call(e, obj);
-                }
-                else {
-                    obj.listenAttached(new Runnable() {
-                        public void run() {
-                            callback.call(e, obj);
-                        }
-                    });
-                }
+                obj.listenAttached(new Runnable() {
+                    public void run() {
+                        callback.call(e, obj);
+                    }
+                });
             }
         });
     }

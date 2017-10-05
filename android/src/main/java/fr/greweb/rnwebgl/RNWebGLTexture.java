@@ -3,6 +3,7 @@ package fr.greweb.rnwebgl;
 import com.facebook.react.bridge.ReadableMap;
 
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static fr.greweb.rnwebgl.RNWebGL.*;
 
@@ -11,7 +12,7 @@ public class RNWebGLTexture {
     public final int objId;
     public final int width;
     public final int height;
-    private boolean attached = false;
+    private AtomicBoolean attached = new AtomicBoolean(false);
     private ArrayList<Runnable> mAttachEventQueue = new ArrayList<>();
 
 
@@ -22,9 +23,9 @@ public class RNWebGLTexture {
         this.height = height;
     }
 
-    public void attachTexture (int texture) {
+    public synchronized void attachTexture (int texture) {
         RNWebGLContextMapObject(ctxId, objId, texture);
-        attached = true;
+        attached.set(true);
         if (!mAttachEventQueue.isEmpty()) {
             for (Runnable r : new ArrayList<>(mAttachEventQueue)) {
                 r.run();
@@ -33,12 +34,13 @@ public class RNWebGLTexture {
         }
     }
 
-    public boolean isAttached () {
-        return attached;
-    }
-
-    public boolean listenAttached (Runnable r) {
-        return mAttachEventQueue.add(r);
+    public synchronized boolean listenAttached (Runnable r) {
+        if(attached.get()){
+            r.run();
+            return true;
+        } else {
+            return mAttachEventQueue.add(r);
+        }
     }
 
     public void destroy() {
