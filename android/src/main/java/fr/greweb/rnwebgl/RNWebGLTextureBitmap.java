@@ -11,6 +11,8 @@ public class RNWebGLTextureBitmap extends RNWebGLTexture implements Runnable {
 
     final Bitmap bitmap;
 
+    private int glTexture = -1;
+
     public RNWebGLTextureBitmap(ReadableMap config, Bitmap source) {
         super(config, source.getWidth(), source.getHeight());
         boolean yflip = config.hasKey("yflip") && config.getBoolean("yflip");
@@ -25,14 +27,28 @@ public class RNWebGLTextureBitmap extends RNWebGLTexture implements Runnable {
         }
         this.runOnGLThread(this);
     }
-    
+
+    @Override
+    public void destroy() {
+        super.destroy();
+        if (glTexture >= 0) {
+            final int[] textures = new int[]{glTexture};
+            this.runOnGLThread(new Runnable() {
+                public void run() {
+                    glDeleteTextures(1, textures, 0);
+                }
+            });
+        }
+    }
+
     public void run() {
         int[] textures = new int[1];
         glGenTextures(1, textures, 0);
-        glBindTexture(GL_TEXTURE_2D, textures[0]);
+        glTexture = textures[0];
+        glBindTexture(GL_TEXTURE_2D, glTexture);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         GLUtils.texImage2D(GL_TEXTURE_2D, 0, bitmap, 0);
-        this.attachTexture(textures[0]);
+        this.attachTexture(glTexture);
     }
 }

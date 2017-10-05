@@ -1,7 +1,5 @@
 package fr.greweb.rnwebgl;
 
-import android.content.Context;
-
 import android.graphics.PixelFormat;
 import android.opengl.EGL14;
 import android.opengl.GLSurfaceView;
@@ -13,7 +11,7 @@ import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.react.uimanager.events.RCTEventEmitter;
 
-import java.util.ArrayList;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -36,7 +34,7 @@ public class RNWebGLView extends GLSurfaceView implements GLSurfaceView.Renderer
   }
 
   private static SparseArray<RNWebGLView> mGLViewMap = new SparseArray<>();
-  private ArrayList<Runnable> mEventQueue = new ArrayList<>();
+  private ConcurrentLinkedQueue<Runnable> mEventQueue = new ConcurrentLinkedQueue<>();
 
   public void onSurfaceCreated(GL10 unused, EGLConfig config) {
     EGL14.eglSurfaceAttrib(EGL14.eglGetCurrentDisplay(), EGL14.eglGetCurrentSurface(EGL14.EGL_DRAW),
@@ -62,7 +60,7 @@ public class RNWebGLView extends GLSurfaceView implements GLSurfaceView.Renderer
 
   public void onDrawFrame(GL10 unused) {
     // Flush any queued events
-    for (Runnable r : new ArrayList<>(mEventQueue)) {
+    for (Runnable r : mEventQueue) {
       r.run();
     }
     mEventQueue.clear();
@@ -85,11 +83,11 @@ public class RNWebGLView extends GLSurfaceView implements GLSurfaceView.Renderer
     super.onDetachedFromWindow();
   }
 
-  public synchronized void runOnGLThread(Runnable r) {
+  public void runOnGLThread(Runnable r) {
     mEventQueue.add(r);
   }
 
-  public static synchronized void runOnGLThread(int ctxId, Runnable r) {
+  public static void runOnGLThread(int ctxId, Runnable r) {
     RNWebGLView glView = mGLViewMap.get(ctxId);
     if (glView != null) {
       glView.runOnGLThread(r);
