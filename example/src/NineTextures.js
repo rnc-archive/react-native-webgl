@@ -1,6 +1,6 @@
 //@flow
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { WebGLView } from "react-native-webgl";
 
 const sources = "bCH5IqY,myrmObg,vAysZ8m,fnNgaNK,aPOdTmT,sOHQVTW,kEuRMQp,MDL7KbV,R5gL6bu"
