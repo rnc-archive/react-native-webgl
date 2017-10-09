@@ -15,6 +15,7 @@ import HelloGL from "./HelloGL";
 import NineTextures from "./NineTextures";
 import BasicTexture from "./BasicTexture";
 import ThreeCube from "./ThreeCube";
+import REGLBunny from "./REGLBunny";
 
 const ExampleRoutes = {
   HelloGL: {
@@ -32,6 +33,10 @@ const ExampleRoutes = {
   ThreeCube: {
     description: "Three.js Cube example",
     screen: ThreeCube
+  },
+  REGLBunny: {
+    description: "regl bunny lighting example",
+    screen: REGLBunny
   }
 };
 
