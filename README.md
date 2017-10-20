@@ -31,6 +31,7 @@ react-native-webgl is implemented with some C++ bricks and `react-native link re
 
 - `android/local.properties`: Make sure you have Android NDK (needed to compile the Native C++ code) and that it's properly configured in ANDROID_NDK env or in `local.properties` file (e.g. `ndk.dir=/usr/local/opt/android-ndk-r10e`).
 - `android/build.gradle`: If it's not already there, add `gradle-download-task` **buildscript** dependency: `classpath 'de.undercouch:gradle-download-task:3.1.2'` . If you don't do this, you will likely have `:downloadJSCHeaders` not working.
+- `android/app/build.gradle`: Make shure you have `minSdkVersion 17` or higher
 
 ## Usage
 
