@@ -69,7 +69,7 @@ The first noticeable difference is the addition of an extension, called `"RN"` t
 
 - `endFrame()`: the mandatory call to get anything drawn on screen. It's the way to tell the current implementation everything is finished for the current frame. (we might later introduce better way)
 - `loadTexture(config)`: It is a way to load a `Texture` with a configuration object. For the config object format see Section **Texture Config Formats**.This function returns a **Promise of `{ texture, width, height }`** where texture is the actual `WebGLTexture` instance you can use in a `gl.bindTexture` and width and height is the texture dimension.
-- `unloadTexture(texture)`: allows to unload a texture with the texture object that was returned in a previous `loadTexture`.
+- `unloadTexture(texture)`: It is a way to unload a `Texture` with the texture object that was returned from a previous `loadTexture` call. This must be invoked when a texture is no longer required and when it can be removed, in order to avoid memory leaks. This is especially important when using your preferred library (such as three.js), as not only the objects created by your preferred library will need to be disposed, but the texture object itself needs to be unloaded. For an example of how to safely remove all references to textures, see this [memory leak issue](https://github.com/react-community/react-native-webgl/issues/23) discussion.
 
 #### Texture Config Formats
 
