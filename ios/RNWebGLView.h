@@ -8,4 +8,12 @@
 
 @property (nonatomic, copy) RCTDirectEventBlock onSurfaceCreate;
 
+- (NSDictionary *)maybeStartARSession;
+- (void)maybeStopARSession;
+- (NSDictionary *)arMatricesForViewportSize:(CGSize)viewportSize zNear:(CGFloat)zNear zFar:(CGFloat)zFar;
+
+// "protected"
+@property (nonatomic, strong) EAGLContext *eaglCtx;
+@property (nonatomic, assign) RNWebGLContextId exglCtxId;
+
 @end
