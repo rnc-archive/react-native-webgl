@@ -2,9 +2,11 @@
 import React from "react";
 import PropTypes from "prop-types";
 import {
+  NativeModules,
   Platform,
   View,
   ViewPropTypes,
+  findNodeHandle,
   requireNativeComponent
 } from "react-native";
 import RNExtension from "./RNExtension";
@@ -103,4 +105,8 @@ export default class WebGLView extends React.Component {
   static NativeView = requireNativeComponent("RNWebGLView", WebGLView, {
     nativeOnly: { onSurfaceCreate: true }
   });
+
+  startARSessionAsync() {
+    return NativeModules.WebGLViewManager.startARSessionAsync(findNodeHandle(this.nativeRef));
+  }
 }
