@@ -8,13 +8,13 @@
 
 #import "RNWebGL.h"
 #import "RNWebGLTextureLoader.h"
+#import "RNWebGLARSessionManager.h"
 #import "GPUImage.h"
 
 @interface RNWebGLView ()
 
 @property (nonatomic, weak) RNWebGLViewManager *viewManager;
 
-@property (nonatomic, strong) EAGLContext *eaglCtx;
 @property (nonatomic, assign) GLuint viewFramebuffer;
 @property (nonatomic, assign) GLuint viewColorbuffer;
 @property (nonatomic, assign) GLuint viewDepthStencilbuffer;

@@ -55,7 +55,7 @@ static GLfloat arCamVerts[] = { -2.0f, 0.0f, 0.0f, -2.0f, 2.0f, 2.0f };
   }
   _arCamYTex = NULL;
   _arCamCbCrTex = NULL;
-  
+    
   // Compile camera texture vertex and fragment shader
   GLuint camVert = glCreateShader(GL_VERTEX_SHADER);
   const char *camVertSrc = STRINGIZE

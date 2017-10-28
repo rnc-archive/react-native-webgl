@@ -1,6 +1,7 @@
 #import <React/RCTBridge.h>
 
 #import "RNWebGLViewManager.h"
+#import "RNWebGL.h"
 
 @interface RNWebGLView : UIView
 

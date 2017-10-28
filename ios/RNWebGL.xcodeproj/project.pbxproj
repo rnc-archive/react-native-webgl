@@ -21,6 +21,7 @@
 		34FC89E41F4C55F1008A1EDF /* RNWebGLTextureRCTImageLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = 34FC89E31F4C55F1008A1EDF /* RNWebGLTextureRCTImageLoader.m */; };
 		34FC89E61F4C5623008A1EDF /* RNWebGLTextureRCTImageLoader.h in Sources */ = {isa = PBXBuildFile; fileRef = 34FC89E51F4C5623008A1EDF /* RNWebGLTextureRCTImageLoader.h */; };
 		34FC89E81F4C587B008A1EDF /* RNWebGLTextureUIImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 34FC89E71F4C587B008A1EDF /* RNWebGLTextureUIImage.m */; };
+		E3BE586A1FA4F6A800CE1700 /* RNWebGLARSessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E3BE58661FA4F6A800CE1700 /* RNWebGLARSessionManager.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -79,6 +80,8 @@
 		34FC89E71F4C587B008A1EDF /* RNWebGLTextureUIImage.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; path = RNWebGLTextureUIImage.m; sourceTree = "<group>"; tabWidth = 2; };
 		34FC89E91F4C593C008A1EDF /* RNWebGLTextureUIImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNWebGLTextureUIImage.h; sourceTree = "<group>"; };
 		4107012F1ACB723B00C6AA39 /* libRNWebGL.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libRNWebGL.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		E3BE58651FA4F6A800CE1700 /* RNWebGLARSessionManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNWebGLARSessionManager.h; sourceTree = "<group>"; };
+		E3BE58661FA4F6A800CE1700 /* RNWebGLARSessionManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNWebGLARSessionManager.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -113,6 +116,7 @@
 		410701241ACB719800C6AA39 = {
 			isa = PBXGroup;
 			children = (
+				E3BE58641FA4F6A800CE1700 /* ARKit */,
 				34ECB98D1F4ADC12002DC163 /* EXiOSUtils.h */,
 				34ECB98E1F4ADC12002DC163 /* EXiOSUtils.mm */,
 				34ECB98F1F4ADC12002DC163 /* JSConvertTypedArray.c */,
@@ -148,6 +152,15 @@
 				4107012F1ACB723B00C6AA39 /* libRNWebGL.a */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		E3BE58641FA4F6A800CE1700 /* ARKit */ = {
+			isa = PBXGroup;
+			children = (
+				E3BE58651FA4F6A800CE1700 /* RNWebGLARSessionManager.h */,
+				E3BE58661FA4F6A800CE1700 /* RNWebGLARSessionManager.m */,
+			);
+			path = ARKit;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -238,6 +251,7 @@
 				34FC89E41F4C55F1008A1EDF /* RNWebGLTextureRCTImageLoader.m in Sources */,
 				34FC89E21F4C312E008A1EDF /* RNWebGLTextureLoader.m in Sources */,
 				34FC89E61F4C5623008A1EDF /* RNWebGLTextureRCTImageLoader.h in Sources */,
+				E3BE586A1FA4F6A800CE1700 /* RNWebGLARSessionManager.m in Sources */,
 				34613D7C1F4AD9CD00A73403 /* RNWebGLViewManager.m in Sources */,
 				34844F2E1F4D724C0027C8D9 /* RNWebGLTextureWithGPUImage.m in Sources */,
 				34613DAC1F4ADA3700A73403 /* RNWebGL.cpp in Sources */,
