@@ -278,7 +278,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init);
 
 - (NSDictionary *)maybeStartARSession
 {
-  _arSessionManager = [RNWebGLARSessionManager init];
+  _arSessionManager = [[RNWebGLARSessionManager alloc] init];
   return [_arSessionManager startARSessionWithGLView:self];
 }
 
