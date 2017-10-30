@@ -6,14 +6,19 @@ import THREE from "./three";
 
 export default class App extends React.Component {
   requestId: *;
+  rotating = true;
+  renderer;
+  scene;
+  camera;
+  cube;
+
   componentWillUnmount() {
     cancelAnimationFrame(this.requestId);
   }
-  onContextCreate = (gl: WebGLRenderingContext) => {
-    const rngl = gl.getExtension("RN");
 
+  onContextCreate = (gl: WebGLRenderingContext) => {
     const { drawingBufferWidth: width, drawingBufferHeight: height } = gl;
-    const renderer = new THREE.WebGLRenderer({
+    this.renderer = new THREE.WebGLRenderer({
       canvas: {
         width,
         height,
@@ -24,53 +29,62 @@ export default class App extends React.Component {
       },
       context: gl
     });
-    renderer.setSize(width, height);
-    renderer.setClearColor(0x000000, 1);
+    this.renderer.setSize(width, height);
+    this.renderer.setClearColor(0x000000, 1);
 
-    let camera, scene;
-    let cube;
+    this.init(width, height);
+    // animate();
+  };
+  toggleRotation = () => {
+    this.rotating = !this.rotating;
+  };
 
-    function init() {
-      camera = new THREE.PerspectiveCamera(75, width / height, 1, 1100);
-      camera.position.y = 150;
-      camera.position.z = 500;
-      scene = new THREE.Scene();
+  init = (width, height) => {
+    this.camera = new THREE.PerspectiveCamera(75, width / height, 1, 1100);
+    this.camera.position.y = 150;
+    this.camera.position.z = 500;
+    this.scene = new THREE.Scene();
 
-      let geometry = new THREE.BoxGeometry(200, 200, 200);
-      for (let i = 0; i < geometry.faces.length; i += 2) {
-        let hex = Math.random() * 0xffffff;
-        geometry.faces[i].color.setHex(hex);
-        geometry.faces[i + 1].color.setHex(hex);
+    let geometry = new THREE.BoxGeometry(200, 200, 200);
+    for (let i = 0; i < geometry.faces.length; i += 2) {
+      let hex = Math.random() * 0xffffff;
+      geometry.faces[i].color.setHex(hex);
+      geometry.faces[i + 1].color.setHex(hex);
+    }
+
+    let material = new THREE.MeshBasicMaterial({
+      vertexColors: THREE.FaceColors,
+      overdraw: 0.5
+    });
+
+    this.cube = new THREE.Mesh(geometry, material);
+    this.cube.position.y = 150;
+    this.scene.add(this.cube);
+  };
+
+  animate = () => {
+    if (this.renderer) {
+      // this.requestId = requestAnimationFrame(animate);
+      this.renderer.render(this.scene, this.camera);
+
+      if (this.rotating) {
+        this.cube.rotation.y += 0.05;
       }
 
-      let material = new THREE.MeshBasicMaterial({
-        vertexColors: THREE.FaceColors,
-        overdraw: 0.5
-      });
-
-      cube = new THREE.Mesh(geometry, material);
-      cube.position.y = 150;
-      scene.add(cube);
-    }
-    const animate = () => {
-      this.requestId = requestAnimationFrame(animate);
-      renderer.render(scene, camera);
-
-      cube.rotation.y += 0.05;
-
-      gl.flush();
+      const rngl = this.renderer.context.getExtension("RN");
       rngl.endFrame();
-    };
-
-    init();
-    animate();
+    }
   };
+
   render() {
     return (
-      <View style={styles.container}>
+      <View style={styles.container} onTouchStart={this.toggleRotation}>
         <WebGLView
           style={styles.webglView}
           onContextCreate={this.onContextCreate}
+          onFrame={() => {
+            this.animate();
+          }}
         />
       </View>
     );

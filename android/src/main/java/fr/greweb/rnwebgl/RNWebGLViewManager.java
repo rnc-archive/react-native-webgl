@@ -25,6 +25,8 @@ public class RNWebGLViewManager extends SimpleViewManager<RNWebGLView> {
   public @Nullable Map getExportedCustomDirectEventTypeConstants() {
     return MapBuilder.of(
             "surfaceCreate",
-            MapBuilder.of("registrationName", "onSurfaceCreate"));
+            MapBuilder.of("registrationName", "onSurfaceCreate"),
+            "frame",
+            MapBuilder.of("registrationName", "onFrame"));
   }
 }

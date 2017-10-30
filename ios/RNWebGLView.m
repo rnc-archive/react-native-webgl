@@ -236,6 +236,9 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init);
     [EAGLContext setCurrentContext:_eaglCtx];
     RNWebGLContextSetDefaultFramebuffer(_ctxId, _msaaFramebuffer);
     RNWebGLContextFlush(_ctxId);
+      
+    // onFrame callback
+    self.onFrame(@{});
 
     // Present current state of view buffers
     // TODO(nikki): This should happen exactly at `endFrame()` in the queue
