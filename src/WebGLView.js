@@ -2,9 +2,11 @@
 import React from "react";
 import PropTypes from "prop-types";
 import {
+  NativeModules,
   Platform,
   View,
   ViewPropTypes,
+  findNodeHandle,
   requireNativeComponent
 } from "react-native";
 import RNExtension from "./RNExtension";
@@ -67,12 +69,17 @@ export default class WebGLView extends React.Component {
     return (
       <View {...viewProps}>
         <WebGLView.NativeView
+          ref={this.setNativeRef}
           style={{ flex: 1, backgroundColor: "transparent" }}
           onSurfaceCreate={this.onSurfaceCreate}
           msaaSamples={Platform.OS === "ios" ? msaaSamples : undefined}
         />
       </View>
     );
+  }
+
+  setNativeRef = (nativeRef) => {
+    this.nativeRef = nativeRef;
   }
 
   onSurfaceCreate = ({
@@ -103,4 +110,8 @@ export default class WebGLView extends React.Component {
   static NativeView = requireNativeComponent("RNWebGLView", WebGLView, {
     nativeOnly: { onSurfaceCreate: true }
   });
+
+  startARSessionAsync() {
+    return NativeModules.RNWebGLViewManager.startARSessionAsync(findNodeHandle(this.nativeRef));
+  }
 }

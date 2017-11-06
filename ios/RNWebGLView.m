@@ -8,13 +8,13 @@
 
 #import "RNWebGL.h"
 #import "RNWebGLTextureLoader.h"
+#import "RNWebGLARSessionManager.h"
 #import "GPUImage.h"
 
 @interface RNWebGLView ()
 
 @property (nonatomic, weak) RNWebGLViewManager *viewManager;
 
-@property (nonatomic, strong) EAGLContext *eaglCtx;
 @property (nonatomic, assign) GLuint viewFramebuffer;
 @property (nonatomic, assign) GLuint viewColorbuffer;
 @property (nonatomic, assign) GLuint viewDepthStencilbuffer;
@@ -26,6 +26,8 @@
 @property (nonatomic, assign) RNWebGLContextId ctxId;
 
 @property (nonatomic, assign) NSNumber *msaaSamples;
+
+@property (nonatomic, strong) id arSessionManager;
 
 @end
 
@@ -234,6 +236,12 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init);
   // this frame (the GL work to run remains on the queue for next time).
   if (_ctxId != 0 && _viewFramebuffer != 0) {
     [EAGLContext setCurrentContext:_eaglCtx];
+
+    // Update AR stuff if we have an AR session running
+    if (_arSessionManager) {
+      [_arSessionManager updateARCamTexture];
+    }
+
     RNWebGLContextSetDefaultFramebuffer(_ctxId, _msaaFramebuffer);
     RNWebGLContextFlush(_ctxId);
 
@@ -264,6 +272,30 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init);
       glBindRenderbuffer(GL_RENDERBUFFER, prevRenderbuffer);
     }
   }
+}
+
+#pragma mark - maybe AR
+
+- (NSDictionary *)maybeStartARSession
+{
+  _arSessionManager = [[RNWebGLARSessionManager alloc] init];
+  return [_arSessionManager startARSessionWithGLView:self];
+}
+
+- (void)maybeStopARSession
+{
+  if (_arSessionManager) {
+    [_arSessionManager stopARSession];
+    _arSessionManager = nil;
+  }
+}
+
+- (NSDictionary *)arMatricesForViewportSize:(CGSize)viewportSize zNear:(CGFloat)zNear zFar:(CGFloat)zFar
+{
+  if (_arSessionManager) {
+    return [_arSessionManager arMatricesForViewportSize:viewportSize zNear:zNear zFar:zFar];
+  }
+  return @{};
 }
 
 @end
