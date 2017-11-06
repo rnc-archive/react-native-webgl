@@ -47,7 +47,7 @@ public class RNWebGLView extends GLSurfaceView implements GLSurfaceView.Renderer
       reactContext.runOnJSQueueThread(new Runnable() {
         @Override
         public void run() {
-          ctxId = RNWebGLContextCreate(reactContext.getJavaScriptContext());
+          ctxId = RNWebGLContextCreate(reactContext.getJavaScriptContextHolder().get());
           mGLViewMap.put(ctxId, glView);
           WritableMap arg = Arguments.createMap();
           arg.putInt("ctxId", ctxId);
