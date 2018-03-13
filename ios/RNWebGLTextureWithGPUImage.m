@@ -12,20 +12,10 @@
                      withWidth:(int)width
                     withHeight:(int)height {
   if ((self = [super initWithConfig:config withWidth:width withHeight:height])) {
-    bool yflip = [RCTConvert BOOL:config[@"yflip"]];
     output = [[GPUImageTextureOutput alloc] init];
     output.delegate = self;
     [source useNextFrameForImageCapture];
-    if (!yflip) {
-      [source addTarget:output];
-    }
-    else {
-      filter = [[GPUImageCropFilter alloc] init];
-      [filter setInputRotation:kGPUImageFlipVertical atIndex:0];
-      [filter useNextFrameForImageCapture];
-      [filter addTarget:output];
-      [source addTarget:filter];
-    }
+    [source addTarget:output];
   }
   return self;
 }
