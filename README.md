@@ -59,7 +59,7 @@ class RedSquareWebGL extends Component {
 }
 ```
 
-> For a better example, see [Image drawn through a Shader](example/App.js) (vanilla WebGL).
+> For a better example, see [Image drawn through a Shader](example/src/BasicTexture.js) (vanilla WebGL).
 Then, feel free to use your preferred library, like https://github.com/regl-project/regl , https://github.com/mrdoob/three.js or https://github.com/gre/gl-react (`gl-react-native` is backed by this implementation).
 
 ## Difference with web's WebGL
