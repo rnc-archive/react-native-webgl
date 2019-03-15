@@ -124,12 +124,12 @@ task packageRNWebGLLibs(dependsOn: buildRNWebGLLib, type: Copy) {
 }
 
 android {
-  compileSdkVersion 24
+  compileSdkVersion 26
   buildToolsVersion '25.0.0'
 
   defaultConfig {
     minSdkVersion 17
-    targetSdkVersion 24
+    targetSdkVersion 26
     versionCode 1
     versionName "1.0"
     ndk {
