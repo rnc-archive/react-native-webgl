@@ -5,6 +5,7 @@
 
 #import <React/RCTBridgeModule.h>
 #import <React/RCTUtils.h>
+#import <React/RCTBridge+Private.h>
 
 #import "RNWebGL.h"
 #import "RNWebGLTextureLoader.h"
@@ -34,6 +35,7 @@
 
 - (JSGlobalContextRef)jsContextRef;
 - (void)dispatchBlock:(dispatch_block_t)block queue:(dispatch_queue_t)queue;
+- (void *)runtime;
 
 @end
 
@@ -85,6 +87,23 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init);
                           height:self.contentScaleFactor * self.frame.size.height];
 }
 
+- (JSGlobalContextRef) getJSContext
+{
+    RCTBridge *bridge = _viewManager.bridge;
+    if ([bridge respondsToSelector:@selector(jsContextRef)]) {
+        // RN < 0.58 has a private method that returns the js context
+        return [bridge jsContextRef];
+    } else {
+        // RN 0.58+ wraps the js context in the jsi abstraction layer,
+        // which doesn't have any way to obtain the JSGlobalContextRef,
+        struct RNWebGLJSCRuntime {
+            virtual ~RNWebGLJSCRuntime() = 0;
+            JSGlobalContextRef ctx_;
+        };
+        return static_cast<RNWebGLJSCRuntime*>([bridge runtime])->ctx_;
+    }
+}
+
 - (void)setOnSurfaceCreate:(RCTDirectEventBlock)onSurfaceCreate
 {
   _onSurfaceCreate = onSurfaceCreate;
@@ -102,7 +121,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init);
           return;
         }
 
-        JSGlobalContextRef jsContextRef = [bridge jsContextRef];
+        JSGlobalContextRef jsContextRef = [self getJSContext];
         if (!jsContextRef) {
           RCTLogError(@"RNWebGL: The React Native bridge unexpectedly does not have a JavaScriptCore context.");
           return;
@@ -209,7 +228,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init);
 {
   // Destroy JS binding
   RNWebGLContextDestroy(_ctxId);
-  
+
   // Destroy all objects created to not leak pending work
   [_viewManager.bridge.webglObjectLoader unloadWithCtxId:_ctxId];
 

@@ -9,7 +9,7 @@
 /* Begin PBXBuildFile section */
 		34613D791F4AD9CD00A73403 /* RNWebGLTexture.m in Sources */ = {isa = PBXBuildFile; fileRef = 34613D701F4AD9CD00A73403 /* RNWebGLTexture.m */; };
 		34613D7A1F4AD9CD00A73403 /* RNWebGLTextureManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 34613D721F4AD9CD00A73403 /* RNWebGLTextureManager.m */; };
-		34613D7B1F4AD9CD00A73403 /* RNWebGLView.m in Sources */ = {isa = PBXBuildFile; fileRef = 34613D741F4AD9CD00A73403 /* RNWebGLView.m */; };
+		34613D7B1F4AD9CD00A73403 /* RNWebGLView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 34613D741F4AD9CD00A73403 /* RNWebGLView.mm */; };
 		34613D7C1F4AD9CD00A73403 /* RNWebGLViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 34613D761F4AD9CD00A73403 /* RNWebGLViewManager.m */; };
 		34613DAC1F4ADA3700A73403 /* RNWebGL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 34613DA21F4ADA3700A73403 /* RNWebGL.cpp */; };
 		34844F2E1F4D724C0027C8D9 /* RNWebGLTextureWithGPUImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 34844F2D1F4D724C0027C8D9 /* RNWebGLTextureWithGPUImage.m */; };
@@ -58,7 +58,7 @@
 		34613D711F4AD9CD00A73403 /* RNWebGLTextureManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNWebGLTextureManager.h; sourceTree = "<group>"; };
 		34613D721F4AD9CD00A73403 /* RNWebGLTextureManager.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; path = RNWebGLTextureManager.m; sourceTree = "<group>"; tabWidth = 2; };
 		34613D731F4AD9CD00A73403 /* RNWebGLView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNWebGLView.h; sourceTree = "<group>"; };
-		34613D741F4AD9CD00A73403 /* RNWebGLView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNWebGLView.m; sourceTree = "<group>"; };
+		34613D741F4AD9CD00A73403 /* RNWebGLView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNWebGLView.mm; sourceTree = "<group>"; };
 		34613D751F4AD9CD00A73403 /* RNWebGLViewManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNWebGLViewManager.h; sourceTree = "<group>"; };
 		34613D761F4AD9CD00A73403 /* RNWebGLViewManager.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; path = RNWebGLViewManager.m; sourceTree = "<group>"; tabWidth = 2; };
 		34613DA21F4ADA3700A73403 /* RNWebGL.cpp */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.cpp.cpp; name = RNWebGL.cpp; path = ../cpp/RNWebGL.cpp; sourceTree = "<group>"; tabWidth = 2; };
@@ -134,7 +134,7 @@
 				34613D711F4AD9CD00A73403 /* RNWebGLTextureManager.h */,
 				34613D721F4AD9CD00A73403 /* RNWebGLTextureManager.m */,
 				34613D731F4AD9CD00A73403 /* RNWebGLView.h */,
-				34613D741F4AD9CD00A73403 /* RNWebGLView.m */,
+				34613D741F4AD9CD00A73403 /* RNWebGLView.mm */,
 				34613D751F4AD9CD00A73403 /* RNWebGLViewManager.h */,
 				34613D761F4AD9CD00A73403 /* RNWebGLViewManager.m */,
 				34FC89B91F4AE59A008A1EDF /* framework */,
@@ -232,7 +232,7 @@
 				34ECB9931F4ADC12002DC163 /* EXiOSUtils.mm in Sources */,
 				34613D7A1F4AD9CD00A73403 /* RNWebGLTextureManager.m in Sources */,
 				34ECB9941F4ADC12002DC163 /* JSConvertTypedArray.c in Sources */,
-				34613D7B1F4AD9CD00A73403 /* RNWebGLView.m in Sources */,
+				34613D7B1F4AD9CD00A73403 /* RNWebGLView.mm in Sources */,
 				34ECB9951F4ADC12002DC163 /* JSUtils.c in Sources */,
 				34613D791F4AD9CD00A73403 /* RNWebGLTexture.m in Sources */,
 				34FC89E41F4C55F1008A1EDF /* RNWebGLTextureRCTImageLoader.m in Sources */,
