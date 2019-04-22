@@ -58,7 +58,7 @@
 		34613D711F4AD9CD00A73403 /* RNWebGLTextureManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNWebGLTextureManager.h; sourceTree = "<group>"; };
 		34613D721F4AD9CD00A73403 /* RNWebGLTextureManager.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; path = RNWebGLTextureManager.m; sourceTree = "<group>"; tabWidth = 2; };
 		34613D731F4AD9CD00A73403 /* RNWebGLView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNWebGLView.h; sourceTree = "<group>"; };
-		34613D741F4AD9CD00A73403 /* RNWebGLView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNWebGLView.mm; sourceTree = "<group>"; };
+		34613D741F4AD9CD00A73403 /* RNWebGLView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = RNWebGLView.mm; sourceTree = "<group>"; };
 		34613D751F4AD9CD00A73403 /* RNWebGLViewManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNWebGLViewManager.h; sourceTree = "<group>"; };
 		34613D761F4AD9CD00A73403 /* RNWebGLViewManager.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; path = RNWebGLViewManager.m; sourceTree = "<group>"; tabWidth = 2; };
 		34613DA21F4ADA3700A73403 /* RNWebGL.cpp */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.cpp.cpp; name = RNWebGL.cpp; path = ../cpp/RNWebGL.cpp; sourceTree = "<group>"; tabWidth = 2; };
