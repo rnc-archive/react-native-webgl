@@ -97,8 +97,8 @@ task prepareJSC(dependsOn: downloadJSCHeaders) << {
 }
 
 task buildRNWebGLLib(dependsOn: [prepareJSC], type: Exec) {
-  inputs.file('src/main/jni')
-  inputs.file('../cpp')
+  inputs.dir('src/main/jni')
+  inputs.dir('../cpp')
   outputs.dir("$buildDir/exgl/all")
   commandLine getNdkBuildFullPath(),
           'NDK_PROJECT_PATH=null',
