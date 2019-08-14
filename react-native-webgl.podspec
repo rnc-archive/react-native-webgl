@@ -13,7 +13,7 @@ Pod::Spec.new do |s|
   s.requires_arc        = true
   s.platform            = :ios, '10.0'
   s.pod_target_xcconfig = { 'ENABLE_BITCODE' => 'NO' }
-  s.source_files        = 'ios/*.{h,m}','cpp/*.{h,c,cpp,mm}'
+  s.source_files        = 'ios/*.{h,m,mm}','cpp/*.{h,c,cpp,mm}'
   s.framework           = 'OpenGLES'
   s.dependency          'GPUImage'
   s.dependency          'React'
