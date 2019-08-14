@@ -16,3 +16,4 @@ APP_LDFLAGS += -llog
 APP_LDFLAGS += -lGLESv2
 APP_LDFLAGS += -pthread
 APP_LDFLAGS += -ljnigraphics
+
