@@ -651,6 +651,18 @@ private:
       case GL_UNPACK_FLIP_Y_WEBGL:
         unpackFLipY = param;
         break;
+      case GL_UNPACK_ALIGNMENT:
+        glPixelStorei(GL_UNPACK_ALIGNMENT, param);
+        break;
+      case GL_PACK_ALIGNMENT:
+        glPixelStorei(GL_PACK_ALIGNMENT, param);
+        break;
+      case GL_UNPACK_PREMULTIPLY_ALPHA_WEBGL:
+        RNWebGLSysLog("RNWebGL: gl.pixelStorei() UNPACK_PREMULTIPLY_ALPHA_WEBGL is not supported yet");
+        break;
+      case GL_UNPACK_COLORSPACE_CONVERSION_WEBGL:
+        RNWebGLSysLog("RNWebGL: gl.pixelStorei() UNPACK_COLORSPACE_CONVERSION_WEBGL is not supported yet");
+        break;
       default:
         RNWebGLSysLog("RNWebGL: gl.pixelStorei() doesn't support this parameter yet!");
         break;
